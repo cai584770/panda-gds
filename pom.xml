@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.cai</groupId>
+    <artifactId>panda-gds</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.neo4j.driver</groupId>
+            <artifactId>neo4j-java-driver</artifactId>
+            <version>4.4.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <!-- Neo4j Values Dependency -->
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-values</artifactId>
+            <version>4.4.11</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.grapheco.pandadb</groupId>
+            <artifactId>pandadb-java-driver</artifactId>
+            <version>0.4.7-SNAPSHOT-20240411</version>
+        </dependency>
+        <dependency>
+            <groupId>org.grapheco</groupId>
+            <artifactId>pandadb</artifactId>
+            <version>0.5.0-alpha</version>
+        </dependency>
+        <dependency>
+            <groupId>org.grapheco</groupId>
+            <artifactId>pandadb-plugin</artifactId>
+            <version>0.5.0-alpha</version>
+        </dependency>
+        <dependency>
+            <groupId>org.grapheco</groupId>
+            <artifactId>lynx</artifactId>
+            <version>0.6.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.grapheco</groupId>
+            <artifactId>pandadb-plugin</artifactId>
+            <version>0.5.0-alpha</version>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/org.neo4j.gds/annotations -->
+<!--        <dependency>-->
+<!--            <groupId>org.neo4j.gds</groupId>-->
+<!--            <artifactId>annotations</artifactId>-->
+<!--            <version>2.6.4</version>-->
+<!--            <scope>runtime</scope>-->
+<!--        </dependency>-->
+
+        <!--        <dependency>-->
+<!--            <groupId>org.neo4j</groupId>-->
+<!--            <artifactId>neo4j-gds</artifactId>-->
+<!--            <version>2.6.4</version>-->
+<!--        </dependency>-->
+
+
+<!--        <dependency>-->
+<!--            <groupId>org.neo4j.gds</groupId>-->
+<!--            <artifactId>core</artifactId>-->
+<!--            <version>2.7.0</version>-->
+<!--        </dependency>-->
+        <!-- Contains the basic algorithm infrastructure -->
+<!--        <dependency>-->
+<!--            <groupId>org.neo4j.gds</groupId>-->
+<!--            <artifactId>algo-common</artifactId>-->
+<!--            <version>2.7.0</version>-->
+<!--        </dependency>-->
+
+        <!-- Contains the productized algorithms -->
+<!--        <dependency>-->
+<!--            <groupId>org.neo4j.gds</groupId>-->
+<!--            <artifactId>algo</artifactId>-->
+<!--            <version>2.7.0</version>-->
+<!--        </dependency>-->
+
+<!--        &lt;!&ndash; Contains some alpha algorithms &ndash;&gt;-->
+<!--&lt;!&ndash;        <dependency>&ndash;&gt;-->
+<!--&lt;!&ndash;            <groupId>org.neo4j.gds</groupId>&ndash;&gt;-->
+<!--&lt;!&ndash;            <artifactId>alpha-algo</artifactId>&ndash;&gt;-->
+<!--&lt;!&ndash;            <version>2.7.0</version>&ndash;&gt;-->
+<!--&lt;!&ndash;        </dependency>&ndash;&gt;-->
+
+<!--        &lt;!&ndash; Contains the basic procedure infrastructure &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.neo4j.gds</groupId>-->
+<!--            <artifactId>proc-common</artifactId>-->
+<!--            <version>2.7.0</version>-->
+<!--        </dependency>-->
+
+<!--        &lt;!&ndash; Contains the productized algorithm procedures &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.neo4j.gds</groupId>-->
+<!--            <artifactId>proc</artifactId>-->
+<!--            <version>2.7.0</version>-->
+<!--        </dependency>-->
+
+<!--        &lt;!&ndash; Contains some alpha algorithm procedures&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.neo4j.gds</groupId>-->
+<!--            <artifactId>alpha-proc</artifactId>-->
+<!--            <version>2.7.0</version>-->
+<!--        </dependency>-->
+
+<!--        &lt;!&ndash; Required by the write execution modes, this artifact is responsible for providing the various exporters &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.neo4j.gds</groupId>-->
+<!--            <artifactId>open-write-services</artifactId>-->
+<!--            <version>2.7.0</version>-->
+<!--        </dependency>-->
+    </dependencies>
+</project>
