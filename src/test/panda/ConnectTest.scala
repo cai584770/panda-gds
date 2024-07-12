@@ -15,11 +15,9 @@ object ConnectTest {
     val tx = db.beginTransaction()
     val result = tx.executeQuery(
       """
-        |match (n)
-        |with n as nodes
-        |match ()-[r]-()
-        |with r as rels
-        |return nodes, rels
+        |match (n:Person)
+        |return n
+        |limit 10
         |""".stripMargin)
     result.show()
     tx.commit()

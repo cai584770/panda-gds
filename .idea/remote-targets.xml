@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteTargetsManager">
+    <option name="projectDefaultTargetUuid" value="d41ef624-47f2-42f6-8864-ec53b5887002" />
+    <targets>
+      <target name="cjw@10.0.82.148:22" type="ssh/sftp" uuid="d41ef624-47f2-42f6-8864-ec53b5887002">
+        <config>
+          <option name="projectRootOnTarget" value="/home/cjw/panda-gds" />
+          <option name="serverName" value="cjw@10.0.82.148:22 password" />
+        </config>
+        <ContributedStateBase type="JavaLanguageRuntime">
+          <config>
+            <option name="homePath" value="/usr/lib/jvm/java-11-openjdk-11.0.17.0.8-2.el7_9.x86_64" />
+            <option name="javaVersionString" value="11.0.17" />
+          </config>
+        </ContributedStateBase>
+      </target>
+    </targets>
+  </component>
+</project>
