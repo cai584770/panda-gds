@@ -6,6 +6,7 @@ import org.neo4j.gds.core.huge.HugeGraph
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker
 import org.neo4j.gds.labelpropagation.{LabelPropagation, LabelPropagationStreamConfigImpl}
 
+import java.util.concurrent.ExecutorService
 import scala.collection.mutable
 
 /**
@@ -24,5 +25,16 @@ object LabelPropagationConfig {
 
     propagation
   }
+
+  def labelPropagation(hugeGraph: HugeGraph,concurrency:Int,maxIterations:Int,nodeWeightProperty:String, executorService: ExecutorService,progressTracker: ProgressTracker): Array[Long] = {
+    val config: LabelPropagationStreamConfigImpl.Builder = new LabelPropagationStreamConfigImpl.Builder
+
+    config.concurrency(concurrency).maxIterations(maxIterations).nodeWeightProperty(nodeWeightProperty)
+
+    val propagation: Array[Long] = new LabelPropagation(hugeGraph, config.build(), executorService, progressTracker).compute().labels.toArray
+
+    propagation
+  }
+
 
 }

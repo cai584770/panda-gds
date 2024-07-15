@@ -46,7 +46,6 @@ class PandaLPTest {
     println("cursor\t" + "id.map\t"+ "mapId\t" + "originalId\t"+ "community\t")
 
     for (elem <- propagation.indices) {
-//      println(nodeResult(elem))
       val mapId = ids.toMappedNodeId(nodeResult(elem).values.head.value match {
         case pn: PandaNode => pn.longId
       })
