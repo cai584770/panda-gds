@@ -21,7 +21,7 @@ class PandaLouvainTest {
     val dbPath = "/home/cjw/lsbc.db"
     val (nodeResult, relationshipResult) = LoadDataFromPandaDB.getNodeAndRelationship(dbPath, "Person", "KNOWS")
 
-    val hg = GraphConversion.convert(nodeResult, relationshipResult, RelationshipType.of("KNOWS"))
+    val hg = GraphConversion.convertWithId(nodeResult, relationshipResult, RelationshipType.of("KNOWS"))
 
     val (dendrogram,modularities) = PandaLouvainConfig.louvain(hg, nodeResult.length, TOLERANCE_DEFAULT, 10, includeIntermediateCommunities = true, 1, ProgressTracker.NULL_TRACKER, DefaultPool.INSTANCE, TerminationFlag.RUNNING_TRUE)
 

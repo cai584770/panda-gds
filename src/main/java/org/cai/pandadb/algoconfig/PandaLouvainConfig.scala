@@ -17,6 +17,21 @@ import java.util.concurrent.ExecutorService
  */
 object PandaLouvainConfig {
 
+  def defaultLouvain(hugeGraph: HugeGraph): (Array[HugeLongArray], Array[Double]) = {
+    val config = LouvainStreamConfigImpl.builder.maxLevels(hugeGraph.idMap().nodeCount().toInt).maxIterations(10).tolerance(TOLERANCE_DEFAULT).includeIntermediateCommunities(true).concurrency(1).build
+
+    val louvain = new Louvain(hugeGraph, config, config.includeIntermediateCommunities, config.maxLevels, config.maxIterations, config.tolerance, config.concurrency, ProgressTracker.NULL_TRACKER, DefaultPool.INSTANCE)
+
+    louvain.setTerminationFlag(TerminationFlag.RUNNING_TRUE)
+
+    val compute = louvain.compute
+
+    val dendrogram: Array[HugeLongArray] = compute.dendrogramManager.getAllDendrograms
+    val modularities: Array[Double] = compute.modularities
+
+    (dendrogram, modularities)
+  }
+
   def louvain(hugeGraph: HugeGraph,maxLevels:Int,tolerance:Double,maxIterations:Int,includeIntermediateCommunities:Boolean,concurrency:Int,progressTracker: ProgressTracker,executorService: ExecutorService,terminationFlag: TerminationFlag):(Array[HugeLongArray],Array[Double])={
     val config = LouvainStreamConfigImpl.builder.maxLevels(maxLevels).maxIterations(maxIterations).tolerance(tolerance).includeIntermediateCommunities(includeIntermediateCommunities).concurrency(concurrency).build
 
@@ -28,11 +43,6 @@ object PandaLouvainConfig {
 
     val dendrogram: Array[HugeLongArray] = compute.dendrogramManager.getAllDendrograms
     val modularities: Array[Double] = compute.modularities
-
-//    for (i <- dendrogram.indices) {
-//      System.out.println("dendrogram[" + i + "]:" + dendrogram(i))
-//      System.out.println("modularities[" + i + "]:" + modularities(i))
-//    }
 
     (dendrogram,modularities)
   }

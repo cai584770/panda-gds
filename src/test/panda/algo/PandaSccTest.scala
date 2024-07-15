@@ -17,7 +17,7 @@ class PandaSccTest {
     val dbPath = "/home/cjw/lsbc.db"
     val (nodeResult, relationshipResult) = LoadDataFromPandaDB.getNodeAndRelationship(dbPath, "Person", "KNOWS")
 
-    val hg = GraphConversion.convert(nodeResult, relationshipResult, RelationshipType.of("KNOWS"))
+    val hg = GraphConversion.convertWithId(nodeResult, relationshipResult, RelationshipType.of("KNOWS"))
 
     val array = PandaSCCConfig.scc(hg)
 

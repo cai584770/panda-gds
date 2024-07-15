@@ -37,7 +37,7 @@ class ControlsTest {
   }
 
   @Test
-  def matchAll(): Unit = {
+  def matchSomeNodes(): Unit = {
     val path = "/data/cjw/ldbc100.db"
     val db = GraphDataBaseBuilder.newEmbeddedDatabase(path)
     val tx = db.beginTransaction()

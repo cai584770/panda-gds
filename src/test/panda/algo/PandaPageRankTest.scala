@@ -1,18 +1,13 @@
 package panda.algo
 
-import org.assertj.core.api.Assertions.{assertThat, within}
 import org.cai.pandadb.graph.{GraphConversion, LoadDataFromPandaDB}
 import org.grapheco.pandadb.GraphDataBaseBuilder
 import org.junit.jupiter.api.Test
 import org.neo4j.gds.RelationshipType
-import org.neo4j.gds.api.Graph
-import org.neo4j.gds.api.properties.nodes.NodePropertyValues
 import org.neo4j.gds.core.huge.HugeGraph
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker
 import org.neo4j.gds.pagerank.PageRankAlgorithmFactory.Mode
-import org.neo4j.gds.pagerank.{PageRankAlgorithmFactory, PageRankConfig, PageRankResult, PageRankStreamConfig, PageRankStreamConfigImpl}
-
-import java.util.function.LongToDoubleFunction
+import org.neo4j.gds.pagerank.{PageRankAlgorithmFactory, PageRankStreamConfig, PageRankStreamConfigImpl}
 
 /**
  * @author cai584770
@@ -20,11 +15,11 @@ import java.util.function.LongToDoubleFunction
  * @Version
  */
 class PandaPageRankTest {
-  val SCORE_PRECISION = 1E-5
-  val dbPath = "/home/cjw/ppr.db"
-  val (nodeResult, relationshipResult) = LoadDataFromPandaDB.getNodeAndRelationship(dbPath, "Node", "TYPE")
+  private val SCORE_PRECISION = 1E-5
+  private val dbPath = "/home/cjw/ppr.db"
+  private val (nodeResult, relationshipResult) = LoadDataFromPandaDB.getNodeAndRelationship(dbPath, "Node", "TYPE")
 
-  val hg: HugeGraph = GraphConversion.convert(nodeResult, relationshipResult, RelationshipType.of("TYPE"))
+  private val hg: HugeGraph = GraphConversion.convertWithId(nodeResult, relationshipResult, RelationshipType.of("TYPE"))
 
   @Test
   def createDB(): Unit = {
@@ -77,7 +72,6 @@ class PandaPageRankTest {
     val pageRankResult = new PageRankAlgorithmFactory(Mode.PAGE_RANK).build(hg, build, ProgressTracker.NULL_TRACKER).compute().centralityScoreProvider()
 
     println(pageRankResult)
-//    println(pageRankResult)
 
     val count: Int = hg.idMap().nodeCount().toInt
     for (cursor <- 0 until count){
@@ -98,7 +92,4 @@ class PandaPageRankTest {
   }
 
 
-//  private[pagerank] def runOnPregel(graph: Graph, config: PageRankConfig) = runOnPregel(graph, config, Mode.PAGE_RANK)
-//
-//  private[pagerank] def runOnPregel(graph: Graph, config: PageRankConfig, mode: PageRankAlgorithmFactory.Mode) = new PageRankAlgorithmFactory[PageRankConfig](mode).build(graph, config, ProgressTracker.NULL_TRACKER).compute
 }

@@ -20,7 +20,7 @@ import scala.collection.immutable
 object GraphConversion {
 
 
-  def convert(nodesRecordsList: immutable.Seq[LynxRecord], relationshipsRecordList: immutable.Seq[LynxRecord], relationshipType: RelationshipType): HugeGraph = {
+  def convertWithId(nodesRecordsList: immutable.Seq[LynxRecord], relationshipsRecordList: immutable.Seq[LynxRecord], relationshipType: RelationshipType): HugeGraph = {
     val nodesCount = nodesRecordsList.length
     val lastNode: LynxRecord = nodesRecordsList.last
     val maxNodeId: Long = lastNode.values.head.value match {
