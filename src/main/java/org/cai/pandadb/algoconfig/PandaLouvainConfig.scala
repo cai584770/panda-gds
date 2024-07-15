@@ -18,7 +18,7 @@ import java.util.concurrent.ExecutorService
 object PandaLouvainConfig {
 
   def defaultLouvain(hugeGraph: HugeGraph): (Array[HugeLongArray], Array[Double]) = {
-    val config = LouvainStreamConfigImpl.builder.maxLevels(hugeGraph.idMap().nodeCount().toInt).maxIterations(10).tolerance(TOLERANCE_DEFAULT).includeIntermediateCommunities(true).concurrency(1).build
+    val config: LouvainStreamConfig = LouvainStreamConfigImpl.builder.maxLevels(hugeGraph.idMap().nodeCount().toInt).maxIterations(10).tolerance(TOLERANCE_DEFAULT).includeIntermediateCommunities(true).concurrency(1).build
 
     val louvain = new Louvain(hugeGraph, config, config.includeIntermediateCommunities, config.maxLevels, config.maxIterations, config.tolerance, config.concurrency, ProgressTracker.NULL_TRACKER, DefaultPool.INSTANCE)
 

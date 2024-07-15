@@ -31,4 +31,16 @@ panda-admin-import \
   --relationships=IS_LOCATED_IN=/home/cjw/program/pandadb/import/dynamic/post_isLocatedIn_place_0_0.csv \
   --relationships=STUDY_AT=/home/cjw/program/pandadb/import/dynamic/person_studyAt_organisation_0_0.csv \
   --relationships=WORK_AT=/home/cjw/program/pandadb/import/dynamic/person_workAt_organisation_0_0.csv \
-  --delimiter=| --array-delimiter=;
+  --delimiter='|' --array-delimiter=';'
+
+
+(alice)-[:FOLLOW {weight: 1}]->(bridget),
+(alice)-[:FOLLOW {weight: 10}]->(charles),
+(mark)-[:FOLLOW {weight: 1}]->(doug),
+(bridget)-[:FOLLOW {weight: 1}]->(michael),
+(doug)-[:FOLLOW {weight: 1}]->(mark),
+(michael)-[:FOLLOW {weight: 1}]->(alice),
+(alice)-[:FOLLOW {weight: 1}]->(michael),
+(bridget)-[:FOLLOW {weight: 1}]->(alice),
+(michael)-[:FOLLOW {weight: 1}]->(bridget),
+(charles)-[:FOLLOW {weight: 1}]->(doug)

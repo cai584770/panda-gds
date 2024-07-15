@@ -93,7 +93,6 @@ object GraphConversion {
 
             val gdsPropertiesJava: java.util.Map[String, org.neo4j.values.storable.Value] = gdsProperties.asJava
 
-
             val labels: Array[String] = pn.labels.map(_.value).toArray
             val gdsNodeLabelTokens: NodeLabelToken = NodeLabelTokens.ofNullable(labels)
 
