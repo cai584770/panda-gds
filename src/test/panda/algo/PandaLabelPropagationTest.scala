@@ -1,7 +1,6 @@
 package panda.algo
 
 import org.cai.pandadb.graph.{GraphConversion, LoadDataFromPandaDB}
-import org.grapheco.pandadb.GraphDataBaseBuilder
 import org.grapheco.pandadb.graph.PandaNode
 import org.junit.jupiter.api.Test
 import org.neo4j.gds.RelationshipType
@@ -15,7 +14,7 @@ import org.neo4j.gds.labelpropagation.{LabelPropagation, LabelPropagationStreamC
  * @date 2024/7/12 10:49
  * @Version
  */
-class PandaLPTest {
+class PandaLabelPropagationTest {
 
   private val dbPath = "/home/cjw/lp.db"
   private val (nodeResult, relationshipResult) = LoadDataFromPandaDB.getNodeAndRelationship(dbPath, "User", "FOLLOW")

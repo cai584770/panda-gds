@@ -85,10 +85,11 @@ class PandaDBConvertGraphTest {
 
   @Test
   def convertGraphTest(): Unit = {
-    val dbPath = "/home/cjw/lsbc.db"
+    val dbPath = "/home/cjw/ldbc100t.db"
     val (nodeResult, relationshipResult) = LoadDataFromPandaDB.getNodeAndRelationship(dbPath, "Person", "KNOWS")
 
     val hg = GraphConversion.convertWithId(nodeResult, relationshipResult, RelationshipType.of("KNOWS"))
+
   }
 
 

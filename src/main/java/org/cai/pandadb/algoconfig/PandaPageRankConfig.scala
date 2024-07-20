@@ -14,18 +14,22 @@ import java.util.function.LongToDoubleFunction
  */
 object PandaPageRankConfig {
 
-  def defaultPageRank(hugeGraph: HugeGraph): LongToDoubleFunction = {
-    val build: PageRankStreamConfig = PageRankStreamConfigImpl.builder.maxIterations(40).concurrency(1).tolerance(0).build
+  def pageRank(
+                hugeGraph: HugeGraph,
+                maxIterations: Int = 40,
+                concurrency: Int = 1,
+                tolerance: Int = 0,
+                mode: Mode = Mode.PAGE_RANK,
+                progressTracker: ProgressTracker = ProgressTracker.NULL_TRACKER
+              ): LongToDoubleFunction = {
 
-    new PageRankAlgorithmFactory(Mode.PAGE_RANK).build(hugeGraph, build, ProgressTracker.NULL_TRACKER).compute().centralityScoreProvider()
+    val config: PageRankStreamConfig = PageRankStreamConfigImpl.builder
+      .maxIterations(maxIterations)
+      .concurrency(concurrency)
+      .tolerance(tolerance)
+      .build
 
-  }
-
-  def pageRank(hugeGraph: HugeGraph, maxIterations: Int, concurrency: Int, tolerance: Int, mode: Mode, progressTracker: ProgressTracker): LongToDoubleFunction = {
-    val build: PageRankStreamConfig = PageRankStreamConfigImpl.builder.maxIterations(maxIterations).concurrency(concurrency).tolerance(tolerance).build
-
-    new PageRankAlgorithmFactory(mode).build(hugeGraph, build, progressTracker).compute().centralityScoreProvider()
-
+    new PageRankAlgorithmFactory(mode).build(hugeGraph, config, progressTracker).compute().centralityScoreProvider()
   }
 
 

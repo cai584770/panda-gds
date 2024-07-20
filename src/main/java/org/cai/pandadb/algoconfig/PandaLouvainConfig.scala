@@ -17,12 +17,38 @@ import java.util.concurrent.ExecutorService
  */
 object PandaLouvainConfig {
 
-  def defaultLouvain(hugeGraph: HugeGraph): (Array[HugeLongArray], Array[Double]) = {
-    val config: LouvainStreamConfig = LouvainStreamConfigImpl.builder.maxLevels(hugeGraph.idMap().nodeCount().toInt).maxIterations(10).tolerance(TOLERANCE_DEFAULT).includeIntermediateCommunities(true).concurrency(1).build
+  def louvain(
+               hugeGraph: HugeGraph,
+               tolerance: Double = TOLERANCE_DEFAULT,
+               maxIterations: Int = 10,
+               includeIntermediateCommunities: Boolean = true,
+               concurrency: Int = 1,
+               progressTracker: ProgressTracker = ProgressTracker.NULL_TRACKER,
+               executorService: ExecutorService = DefaultPool.INSTANCE,
+               terminationFlag: TerminationFlag = TerminationFlag.RUNNING_TRUE
+             ): (Array[HugeLongArray], Array[Double]) = {
 
-    val louvain = new Louvain(hugeGraph, config, config.includeIntermediateCommunities, config.maxLevels, config.maxIterations, config.tolerance, config.concurrency, ProgressTracker.NULL_TRACKER, DefaultPool.INSTANCE)
+    val config = LouvainStreamConfigImpl.builder
+      .maxLevels(hugeGraph.idMap().nodeCount().toInt)
+      .maxIterations(maxIterations)
+      .tolerance(tolerance)
+      .includeIntermediateCommunities(includeIntermediateCommunities)
+      .concurrency(concurrency)
+      .build
 
-    louvain.setTerminationFlag(TerminationFlag.RUNNING_TRUE)
+    val louvain = new Louvain(
+      hugeGraph,
+      config,
+      config.includeIntermediateCommunities,
+      config.maxLevels,
+      config.maxIterations,
+      config.tolerance,
+      config.concurrency,
+      progressTracker,
+      executorService
+    )
+
+    louvain.setTerminationFlag(terminationFlag)
 
     val compute = louvain.compute
 
@@ -32,19 +58,6 @@ object PandaLouvainConfig {
     (dendrogram, modularities)
   }
 
-  def louvain(hugeGraph: HugeGraph,maxLevels:Int,tolerance:Double,maxIterations:Int,includeIntermediateCommunities:Boolean,concurrency:Int,progressTracker: ProgressTracker,executorService: ExecutorService,terminationFlag: TerminationFlag):(Array[HugeLongArray],Array[Double])={
-    val config = LouvainStreamConfigImpl.builder.maxLevels(maxLevels).maxIterations(maxIterations).tolerance(tolerance).includeIntermediateCommunities(includeIntermediateCommunities).concurrency(concurrency).build
 
-    val louvain = new Louvain(hugeGraph, config, config.includeIntermediateCommunities, config.maxLevels, config.maxIterations, config.tolerance, config.concurrency, progressTracker, executorService)
-
-    louvain.setTerminationFlag(terminationFlag)
-
-    val compute = louvain.compute
-
-    val dendrogram: Array[HugeLongArray] = compute.dendrogramManager.getAllDendrograms
-    val modularities: Array[Double] = compute.modularities
-
-    (dendrogram,modularities)
-  }
 
 }

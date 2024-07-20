@@ -12,7 +12,7 @@ class CreateDBTest {
 
   @Test
   def delete(): Unit = {
-    val path = "/home/cjw/lp.db"
+    val path = "/home/cjw/dijkstra.db"
     val db = GraphDataBaseBuilder.newEmbeddedDatabase(path)
     val tx = db.beginTransaction()
     tx.executeQuery("MATCH ()-[r]->() DELETE r")
@@ -99,7 +99,6 @@ class CreateDBTest {
     val path = "/home/cjw/lp.db"
     val db = GraphDataBaseBuilder.newEmbeddedDatabase(path)
     val tx = db.beginTransaction()
-    val query = ""
     tx.executeQuery(
       """
         |CREATE
@@ -127,5 +126,87 @@ class CreateDBTest {
     db.close()
   }
 
+
+  @Test
+  def createDijkstraDB(): Unit = {
+    val path = "/home/cjw/dijkstra.db"
+    val db = GraphDataBaseBuilder.newEmbeddedDatabase(path)
+    val tx = db.beginTransaction()
+    tx.executeQuery(
+      """
+        |CREATE
+        |(a:Node{name: 'a'}), (b:Node{name: 'b'}), (c:Node{name: 'c'}), (d:Node{name: 'd'}), (e:Node{name: 'e'}), (f:Node{name: 'f'}),
+        |(a)-[:TYPE {cost: 4}]->(b),
+        |(a)-[:TYPE {cost: 2}]->(c),
+        |(b)-[:TYPE {cost: 5}]->(c),
+        |(b)-[:TYPE {cost: 10}]->(d),
+        |(c)-[:TYPE {cost: 3}]->(e),
+        |(d)-[:TYPE {cost: 11}]->(f),
+        |(e)-[:TYPE {cost: 4}]->(d)
+        |""".stripMargin
+    )
+    val result = tx.executeQuery("match (n) return n;")
+    result.show()
+    tx.commit()
+    tx.close()
+    db.close()
+  }
+
+  @Test
+  def createDSSSPDB(): Unit = {
+    val path = "/home/cjw/dsssp.db"
+    val db = GraphDataBaseBuilder.newEmbeddedDatabase(path)
+    val tx = db.beginTransaction()
+    tx.executeQuery(
+      "CREATE (a:A), (b:B), (c:C), (d:D), (e:E), (f:F), (a)-[:TYPE {cost: 4}]->(b), (a)-[:TYPE {cost: 2}]->(c), (b)-[:TYPE {cost: 5}]->(c), (b)-[:TYPE {cost: 10}]->(d), (c)-[:TYPE {cost: 3}]->(e), (d)-[:TYPE {cost: 11}]->(f), (e)-[:TYPE {cost: 4}]->(d)"
+    )
+    val result = tx.executeQuery("match (n) return n;")
+    result.show()
+    tx.commit()
+    tx.close()
+    db.close()
+  }
+
+  @Test
+  def createBetweennessCentralityPDB(): Unit = {
+    val path = "/home/cjw/bc.db"
+    val db = GraphDataBaseBuilder.newEmbeddedDatabase(path)
+    val tx = db.beginTransaction()
+
+    tx.executeQuery(
+      """
+        |CREATE
+        |(a1)-[:REL]->(b),
+        |(a2)-[:REL]->(b),
+        |(b)-[:REL]->(c),
+        |(b)-[:REL]->(d),
+        |(c)-[:REL]->(e),
+        |(d)-[:REL]->(e),
+        |(e)-[:REL]->(f)
+        |""".stripMargin
+    )
+    val result = tx.executeQuery("match (n) return n;")
+    result.show()
+    tx.commit()
+    tx.close()
+    db.close()
+  }
+
+
+  @Test
+  def createDFSBFSDB(): Unit = {
+    val path = "/home/cjw/pf.db"
+    val db = GraphDataBaseBuilder.newEmbeddedDatabase(path)
+    val tx = db.beginTransaction()
+
+    val query = "CREATE " + "  (a:Node)" + ", (b:Node)" + ", (c:Node)" + ", (d:Node)" + ", (e:Node)" + ", (f:Node)" + ", (g:Node)" + ", (a)-[:REL {cost:2.0}]->(b)" + ", (a)-[:REL {cost:1.0}]->(c)" + ", (b)-[:REL {cost:1.0}]->(d)" + ", (c)-[:REL {cost:2.0}]->(d)" + ", (d)-[:REL {cost:1.0}]->(e)" + ", (d)-[:REL {cost:2.0}]->(f)" + ", (e)-[:REL {cost:2.0}]->(g)" + ", (f)-[:REL {cost:1.0}]->(g)"
+
+    tx.executeQuery(query)
+    val result = tx.executeQuery("match (n) return n;")
+    result.show()
+    tx.commit()
+    tx.close()
+    db.close()
+  }
 
 }

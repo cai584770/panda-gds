@@ -23,7 +23,7 @@ class PandaLouvainTest {
 
     val hg = GraphConversion.convertWithId(nodeResult, relationshipResult, RelationshipType.of("KNOWS"))
 
-    val (dendrogram,modularities) = PandaLouvainConfig.louvain(hg, nodeResult.length, TOLERANCE_DEFAULT, 10, includeIntermediateCommunities = true, 1, ProgressTracker.NULL_TRACKER, DefaultPool.INSTANCE, TerminationFlag.RUNNING_TRUE)
+    val (dendrogram,modularities) = PandaLouvainConfig.louvain(hg, TOLERANCE_DEFAULT, 10, includeIntermediateCommunities = true, 1, ProgressTracker.NULL_TRACKER, DefaultPool.INSTANCE, TerminationFlag.RUNNING_TRUE)
 
     println(nodeResult.length)
 
@@ -32,5 +32,10 @@ class PandaLouvainTest {
       System.out.println("modularities[" + i + "]:" + modularities(i))
     }
   }
+
+
+
+
+
 
 }
