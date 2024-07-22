@@ -7,7 +7,7 @@ import org.neo4j.gds.RelationshipType
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker
 import org.neo4j.gds.paths.PathResult
 import org.neo4j.gds.paths.dijkstra.Dijkstra
-import org.neo4j.gds.paths.dijkstra.config.{ShortestPathDijkstraStreamConfig, ShortestPathDijkstraStreamConfigImpl}
+import org.neo4j.gds.paths.dijkstra.config.{AllShortestPathsDijkstraStreamConfig, AllShortestPathsDijkstraStreamConfigImpl, ShortestPathDijkstraStreamConfig, ShortestPathDijkstraStreamConfigImpl}
 import org.neo4j.gds.termination.TerminationFlag
 
 import java.util
@@ -36,5 +36,14 @@ class PandaDijkstraTest {
 
   }
 
+  @Test
+  def dijkstraSingleSourceShortest: Unit = {
+    val builder: AllShortestPathsDijkstraStreamConfigImpl.Builder = AllShortestPathsDijkstraStreamConfigImpl.builder.concurrency(1)
+    val config: AllShortestPathsDijkstraStreamConfig = builder.sourceNode(hg.toOriginalNodeId(1L)).build
 
+    val result: util.Set[PathResult] = Dijkstra.singleSource(hg,config,false,Optional.empty[Dijkstra.HeuristicFunction], ProgressTracker.NULL_TRACKER, TerminationFlag.RUNNING_TRUE).compute().pathSet()
+
+    println(result)
+
+  }
 }

@@ -16,17 +16,17 @@ import org.neo4j.gds.termination.TerminationFlag
  */
 class PandaAstarTest {
 
-  private val dbPath = "/home/cjw/dijkstra.db"
-  private val (nodeResult, relationshipResult) = LoadDataFromPandaDB.getNodeAndRelationship(dbPath, "Node", "TYPE")
+  private val dbPath = "/home/cjw/bfs.db"
+  private val (nodeResult, relationshipResult) = LoadDataFromPandaDB.getNodeAndRelationship(dbPath, "Node", "REL")
 
-  private val hg = GraphConversion.convertWithNodeLabel(nodeResult, relationshipResult, RelationshipType.of("TYPE"))
+  private val hg = GraphConversion.convertWithNodeLabel(nodeResult, relationshipResult, RelationshipType.of("REL"))
 
   @Test
   def astar():Unit={
     val builder = ShortestPathAStarStreamConfigImpl.builder.concurrency(1)
 
     val config: ShortestPathAStarStreamConfig = builder.sourceNode(hg.toOriginalNodeId(1L))
-      .targetNode(hg.toOriginalNodeId(5L))
+      .targetNode(hg.toOriginalNodeId(3L))
       .build()
 
     val result: PathResult = AStar.sourceTarget(hg, config, ProgressTracker.NULL_TRACKER,TerminationFlag.RUNNING_TRUE).compute.findFirst.get

@@ -195,12 +195,13 @@ class CreateDBTest {
 
   @Test
   def createDFSBFSDB(): Unit = {
-    val path = "/home/cjw/pf.db"
+    val path = "/home/cjw/bfs.db"
     val db = GraphDataBaseBuilder.newEmbeddedDatabase(path)
     val tx = db.beginTransaction()
 
-    val query = "CREATE " + "  (a:Node)" + ", (b:Node)" + ", (c:Node)" + ", (d:Node)" + ", (e:Node)" + ", (f:Node)" + ", (g:Node)" + ", (a)-[:REL {cost:2.0}]->(b)" + ", (a)-[:REL {cost:1.0}]->(c)" + ", (b)-[:REL {cost:1.0}]->(d)" + ", (c)-[:REL {cost:2.0}]->(d)" + ", (d)-[:REL {cost:1.0}]->(e)" + ", (d)-[:REL {cost:2.0}]->(f)" + ", (e)-[:REL {cost:2.0}]->(g)" + ", (f)-[:REL {cost:1.0}]->(g)"
+    var query = "CREATE " + "  (a:Node)" + ", (b:Node)" + ", (c:Node)" + ", (d:Node)" + ", (e:Node)" + ", (f:Node)" + ", (g:Node)" + ", (a)-[:REL {cost:2.0}]->(b)" + ", (a)-[:REL {cost:1.0}]->(c)" + ", (b)-[:REL {cost:1.0}]->(d)" + ", (c)-[:REL {cost:2.0}]->(d)" + ", (d)-[:REL {cost:1.0}]->(e)" + ", (d)-[:REL {cost:2.0}]->(f)" + ", (e)-[:REL {cost:2.0}]->(g)" + ", (f)-[:REL {cost:1.0}]->(g)"
 
+    query = "CREATE (a:Node)" + ", (b:Node)" + ", (c:Node)" + ", (d:Node)" + ", (e:Node)" + ", (f:Node)" + ", (g:Node)" + ", (a)-[:REL {cost:2.0}]->(b)" + ", (a)-[:REL {cost:1.0}]->(c)" + ", (b)-[:REL {cost:1.0}]->(d)" + ", (c)-[:REL {cost:2.0}]->(d)" + ", (d)-[:REL {cost:1.0}]->(e)" + ", (d)-[:REL {cost:2.0}]->(f)" + ", (e)-[:REL {cost:2.0}]->(g)" + ", (f)-[:REL {cost:1.0}]->(g)"
     tx.executeQuery(query)
     val result = tx.executeQuery("match (n) return n;")
     result.show()
