@@ -1,10 +1,12 @@
 package org.cai.pandadb.CommunityDiscoveryAlgoFunc
 
-import org.cai.pandadb.algoconfig.{PandaBetweennessCentralityConfig, PandaLabelPropagationConfig}
+import org.cai.pandadb.algoconfig.PandaBetweennessCentralityConfig
 import org.cai.pandadb.graph.GraphConversion
 import org.grapheco.lynx.func.{LynxProcedure, LynxProcedureArgument}
 import org.grapheco.lynx.types.property.LynxString
 import org.neo4j.gds.RelationshipType
+import org.neo4j.gds.betweenness.{ForwardTraverser, FullSelectionStrategy, SelectionStrategy}
+import org.neo4j.gds.collections.haa.HugeAtomicDoubleArray
 import org.neo4j.gds.core.concurrency.DefaultPool
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker
 
@@ -12,28 +14,29 @@ import java.util.concurrent.ExecutorService
 
 /**
  * @author cai584770
- * @date 2024/7/20 10:32
+ * @date 2024/7/23 15:59
  * @Version
  */
-class LabelPropagationFunction {
+class BetweennessCentralityFunction {
 
-  @LynxProcedure(name = "LabelPropagation.compute")
+  @LynxProcedure(name = "BetweennessCentrality.compute")
   def compute(
                @LynxProcedureArgument(name = "nodeLabel") nodeLabel: LynxString,
                @LynxProcedureArgument(name = "relationshipLabel") relationshipLabel: LynxString,
-               concurrency: Int = 1,
-               maxIterations: Int = 10,
-               nodeWeightProperty: String = null,
+               selectionStrategy: SelectionStrategy = new FullSelectionStrategy,
+               traverserFactory: ForwardTraverser.Factory = ForwardTraverser.Factory.unweighted,
                executorService: ExecutorService = DefaultPool.INSTANCE,
+               concurrency: Int = 1,
                progressTracker: ProgressTracker = ProgressTracker.NULL_TRACKER
-             ): Array[Long] = {
+             ): HugeAtomicDoubleArray = {
 
     val (nodeRecords, relationshipsRecords) = BaseFunction.query(nodeLabel, relationshipLabel)
 
     val hugeGraph = GraphConversion.convertWithId(nodeRecords, relationshipsRecords, RelationshipType.of(relationshipLabel.value))
 
-    val result: Array[Long] = PandaLabelPropagationConfig.labelPropagation(hugeGraph, concurrency, maxIterations, nodeWeightProperty, executorService, progressTracker)
+    val result: HugeAtomicDoubleArray = PandaBetweennessCentralityConfig.betweennessCentrality(hugeGraph, selectionStrategy, traverserFactory, executorService, concurrency, progressTracker)
 
     result
   }
+
 }

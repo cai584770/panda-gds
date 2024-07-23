@@ -1,3 +1,3 @@
-/src/main/java/org/cai/neo4j/algo/
+/src/test/algo/
 
-/src/main/java/org/cai/pandadb/CommunityDiscoveryAlgoFunc/LouvainFunctionExample.scala
+/src/main/java/org/cai/pandadb/CommunityDiscoveryAlgoFunc/example.scala

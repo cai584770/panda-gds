@@ -24,7 +24,6 @@ object PandaLabelPropagationConfig {
                         executorService: ExecutorService = DefaultPool.INSTANCE,
                         progressTracker: ProgressTracker = ProgressTracker.NULL_TRACKER
                       ): Array[Long] = {
-
     val config: LabelPropagationStreamConfigImpl.Builder = new LabelPropagationStreamConfigImpl.Builder
     config.concurrency(concurrency).maxIterations(maxIterations).nodeWeightProperty(nodeWeightProperty)
     new LabelPropagation(hugeGraph, config.build(), executorService, progressTracker).compute().labels.toArray

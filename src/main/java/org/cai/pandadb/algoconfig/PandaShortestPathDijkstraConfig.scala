@@ -18,9 +18,9 @@ import java.util
 object PandaShortestPathDijkstraConfig {
 
   def dijkstra(hugeGraph: HugeGraph,
-               concurrency:Int = 1,
                sourceNodeId: Long,
                targetNodeId: Long,
+               concurrency:Int = 1,
                trackRelationShips: Boolean = false,
                heuristicFunction: Optional[Dijkstra.HeuristicFunction] =Optional.empty[Dijkstra.HeuristicFunction],
                progressTracker: ProgressTracker = ProgressTracker.NULL_TRACKER,

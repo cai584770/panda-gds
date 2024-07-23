@@ -50,12 +50,9 @@ object PandaLouvainConfig {
 
     louvain.setTerminationFlag(terminationFlag)
 
-    val compute = louvain.compute
+    val louvainResult: LouvainResult = louvain.compute
 
-    val dendrogram: Array[HugeLongArray] = compute.dendrogramManager.getAllDendrograms
-    val modularities: Array[Double] = compute.modularities
-
-    (dendrogram, modularities)
+    (louvainResult.dendrogramManager.getAllDendrograms, louvainResult.modularities)
   }
 
 

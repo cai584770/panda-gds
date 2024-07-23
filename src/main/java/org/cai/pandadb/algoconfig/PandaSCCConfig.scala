@@ -12,11 +12,10 @@ import org.neo4j.gds.scc.Scc
  */
 object PandaSCCConfig {
 
-  def scc(hugeGraph: HugeGraph): HugeLongArray = {
-    val scc: Scc = new Scc(hugeGraph, ProgressTracker.NULL_TRACKER)
-    val result: HugeLongArray = scc.compute()
-
-    result
+  def scc(hugeGraph: HugeGraph,
+          progressTracker: ProgressTracker = ProgressTracker.NULL_TRACKER
+         ): HugeLongArray = {
+    new Scc(hugeGraph, progressTracker).compute()
   }
 
 }

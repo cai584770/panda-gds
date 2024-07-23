@@ -23,7 +23,6 @@ object LoadDataFromPandaDB {
     val nodesQuery = s"match (n:${nodeLabel}) return n;"
     val relationshipsQuery = s"MATCH (n:${nodeLabel})-[r:${relationshipLabel}]->(m:${nodeLabel}) RETURN r;"
 
-
     val db: GraphDatabaseService = GraphDataBaseBuilder.newEmbeddedDatabase(dbPath)
     val tx: PandaTransaction = db.beginTransaction()
 

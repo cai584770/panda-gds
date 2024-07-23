@@ -32,5 +32,4 @@ object PandaPageRankConfig {
     new PageRankAlgorithmFactory(mode).build(hugeGraph, config, progressTracker).compute().centralityScoreProvider()
   }
 
-
 }

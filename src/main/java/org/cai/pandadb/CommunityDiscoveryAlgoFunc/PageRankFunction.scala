@@ -28,19 +28,12 @@ class PageRankFunction {
                progressTracker: ProgressTracker = ProgressTracker.NULL_TRACKER
              ): LongToDoubleFunction = {
 
-    val nodesQuery = s"match (n:${nodeLabel}) return n;"
-    val relationshipsQuery = s"MATCH (n:${nodeLabel})-[r:${relationshipLabel}]->(m:${nodeLabel}) RETURN r;"
-    val tx = BaseFunction.embeddedDB.beginTransaction()
-
-    val nodeRecords = tx.executeQuery(nodesQuery).records().toList
-    val relationshipsRecords = tx.executeQuery(relationshipsQuery).records().toList
+    val (nodeRecords,relationshipsRecords) = BaseFunction.query(nodeLabel,relationshipLabel)
 
     val hugeGraph = GraphConversion.convertWithId(nodeRecords, relationshipsRecords, RelationshipType.of(relationshipLabel.value))
 
     val result = PandaPageRankConfig.pageRank(hugeGraph,maxIterations,concurrency, tolerance, mode, progressTracker)
 
-    tx.commit()
-    tx.close()
     result
   }
 
