@@ -1,3 +1,5 @@
 /src/test/algo/
 
-/src/main/java/org/cai/pandadb/CommunityDiscoveryAlgoFunc/example.scala
+/src/main/scala/pandadbgds/CommunityDiscoveryAlgoFunc/example.scala
+
+*.jar

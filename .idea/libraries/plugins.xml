@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="plugins">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/plugins" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/plugins" />
+    </SOURCES>
+    <jarDirectory url="file://$PROJECT_DIR$/plugins" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/plugins" recursive="false" type="SOURCES" />
+  </library>
+</component>
