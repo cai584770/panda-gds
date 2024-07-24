@@ -1,13 +1,11 @@
-package org.cai.pandadb.algoconfig
+package pandadbgds.algoconfig
 
-import org.neo4j.gds.api.IdMap
 import org.neo4j.gds.core.concurrency.DefaultPool
 import org.neo4j.gds.core.huge.HugeGraph
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker
 import org.neo4j.gds.labelpropagation.{LabelPropagation, LabelPropagationStreamConfigImpl}
 
 import java.util.concurrent.ExecutorService
-import scala.collection.mutable
 
 /**
  * @author cai584770

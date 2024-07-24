@@ -1,14 +1,8 @@
-package org.cai.pandadb.graph
+package pandadbgds.graph
 
-import com.neo4j.gds.shaded.org.opencypher.v9_0.parser.javacc.Cypher
 import org.grapheco.lynx.{LynxRecord, LynxResult}
 import org.grapheco.pandadb.GraphDataBaseBuilder
 import org.grapheco.pandadb.facade.{GraphDatabaseService, PandaTransaction}
-import org.grapheco.pandadb.graph.{LazyPandaNode, LazyPandaRelationship, PandaNode}
-import org.neo4j.gds.{Orientation, RelationshipType}
-import org.neo4j.gds.core.huge.HugeGraph
-import org.neo4j.gds.core.loading.SingleTypeRelationships
-import org.neo4j.gds.core.loading.construction.{GraphFactory, RelationshipsBuilder}
 
 import scala.collection.immutable
 

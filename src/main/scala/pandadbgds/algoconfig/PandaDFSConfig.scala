@@ -1,4 +1,4 @@
-package org.cai.pandadb.algoconfig
+package pandadbgds.algoconfig
 
 import org.neo4j.gds.core.huge.HugeGraph
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker

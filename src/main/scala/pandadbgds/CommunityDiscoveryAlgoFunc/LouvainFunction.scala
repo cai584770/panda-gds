@@ -1,24 +1,18 @@
-package org.cai.pandadb.CommunityDiscoveryAlgoFunc
+package pandadbgds.CommunityDiscoveryAlgoFunc
 
 import org.cai.pandadb.algoconfig.PandaLouvainConfig
-import org.cai.pandadb.graph.{GraphConversion, LoadDataFromPandaDB}
-import org.grapheco.lynx.LynxRecord
+import org.cai.pandadb.graph.GraphConversion
 import org.grapheco.lynx.func.{LynxProcedure, LynxProcedureArgument}
 import org.grapheco.lynx.types.property.LynxString
-import org.grapheco.lynx.types.structural.LynxNode
-import org.grapheco.pandadb.PandaInstanceContext
-import org.grapheco.pandadb.facade.{GraphFacade, PandaTransaction}
 import org.grapheco.pandadb.plugin.typesystem.TypeFunctions
 import org.neo4j.gds.RelationshipType
 import org.neo4j.gds.collections.ha.HugeLongArray
 import org.neo4j.gds.core.ProcedureConstants.TOLERANCE_DEFAULT
 import org.neo4j.gds.core.concurrency.DefaultPool
-import org.neo4j.gds.core.loading.construction.RelationshipsBuilder.Relationship
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker
 import org.neo4j.gds.termination.TerminationFlag
 
 import java.util.concurrent.ExecutorService
-import scala.collection.immutable
 
 /**
  * @author cai584770

@@ -1,4 +1,4 @@
-package org.cai.pandadb.algoconfig
+package pandadbgds.algoconfig
 
 import org.neo4j.gds.betweenness.{BetweennessCentrality, ForwardTraverser, FullSelectionStrategy, SelectionStrategy}
 import org.neo4j.gds.collections.haa.HugeAtomicDoubleArray

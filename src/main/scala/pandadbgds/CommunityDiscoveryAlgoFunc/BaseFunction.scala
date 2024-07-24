@@ -1,4 +1,4 @@
-package org.cai.pandadb.CommunityDiscoveryAlgoFunc
+package pandadbgds.CommunityDiscoveryAlgoFunc
 
 import org.grapheco.lynx.LynxRecord
 import org.grapheco.lynx.types.property.LynxString

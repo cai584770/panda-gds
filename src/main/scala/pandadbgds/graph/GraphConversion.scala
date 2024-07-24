@@ -1,4 +1,4 @@
-package org.cai.pandadb.graph
+package pandadbgds.graph
 
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.{LynxRecord, LynxResult}

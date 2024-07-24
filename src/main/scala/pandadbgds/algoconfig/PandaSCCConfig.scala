@@ -1,4 +1,4 @@
-package org.cai.pandadb.algoconfig
+package pandadbgds.algoconfig
 
 import org.neo4j.gds.collections.ha.HugeLongArray
 import org.neo4j.gds.core.huge.HugeGraph

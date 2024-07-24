@@ -1,4 +1,4 @@
-package org.cai.pandadb.CommunityDiscoveryAlgoFunc
+package pandadbgds.CommunityDiscoveryAlgoFunc
 
 import org.cai.pandadb.algoconfig.{PandaDFSConfig, PandaDijkstraSingleSourceShortestConfig, PandaDijkstraSourceTargetShortestConfig}
 import org.cai.pandadb.graph.GraphConversion

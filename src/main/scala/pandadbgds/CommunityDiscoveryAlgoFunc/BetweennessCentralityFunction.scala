@@ -1,10 +1,9 @@
-package org.cai.pandadb.CommunityDiscoveryAlgoFunc
+package pandadbgds.CommunityDiscoveryAlgoFunc
 
 import org.cai.pandadb.algoconfig.PandaBetweennessCentralityConfig
 import org.cai.pandadb.graph.GraphConversion
 import org.grapheco.lynx.func.{LynxProcedure, LynxProcedureArgument}
 import org.grapheco.lynx.types.property.LynxString
-import org.grapheco.pandadb.blob.Blob
 import org.grapheco.pandadb.plugin.typesystem.TypeFunctions
 import org.neo4j.gds.RelationshipType
 import org.neo4j.gds.betweenness.{ForwardTraverser, FullSelectionStrategy, SelectionStrategy}

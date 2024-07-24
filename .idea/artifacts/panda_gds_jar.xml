@@ -37,6 +37,8 @@
       <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/org/opencypher/tck-api_2.12/1.0.0-1.0.0-M14/tck-api_2.12-1.0.0-1.0.0-M14.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/io/netty/netty-codec-http/4.1.51.Final/netty-codec-http-4.1.51.Final.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/io/opencensus/opencensus-proto/0.2.0/opencensus-proto-0.2.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/org/junit/jupiter/junit-jupiter-api/5.11.0-M2/junit-jupiter-api-5.11.0-M2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/plugins/panda-gds.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/io/netty/netty-codec/4.1.51.Final/netty-codec-4.1.51.Final.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/io/grpc/grpc-api/1.33.0/grpc-api-1.33.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/io/netty/netty-handler/4.1.51.Final/netty-handler-4.1.51.Final.jar" path-in-jar="/" />
@@ -57,6 +59,7 @@
       <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/io/grpc/grpc-all/1.33.0/grpc-all-1.33.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/io/grpc/grpc-protobuf/1.33.0/grpc-protobuf-1.33.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/com/google/guava/guava/29.0-android/guava-29.0-android.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/org/junit/platform/junit-platform-commons/1.11.0-M2/junit-platform-commons-1.11.0-M2.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/org/opencypher/rewriting-9.0/9.0.20190305/rewriting-9.0-9.0.20190305.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/io/netty/netty-common/4.1.17.Final/netty-common-4.1.17.Final.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/org/scala-lang/scala-compiler/2.12.8/scala-compiler-2.12.8.jar" path-in-jar="/" />
@@ -85,9 +88,11 @@
       <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/org/scalacheck/scalacheck_2.12/1.14.0/scalacheck_2.12-1.14.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/org/conscrypt/conscrypt-openjdk-uber/2.5.1/conscrypt-openjdk-uber-2.5.1.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/log4j/log4j/1.2.17/log4j-1.2.17.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/junit/junit/4.12/junit-4.12.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/com/squareup/okio/okio/1.13.0/okio-1.13.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/io/cucumber/gherkin/5.0.0/gherkin-5.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/org/grapheco/lynx-rpcplus/0.1.0-SNAPSHOT-20240110/lynx-rpcplus-0.1.0-SNAPSHOT-20240110.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/io/grpc/grpc-testing/1.33.0/grpc-testing-1.33.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/org/apache/httpcomponents/httpclient/4.5.7/httpclient-4.5.7.jar" path-in-jar="/" />
@@ -108,6 +113,7 @@
       <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/com/squareup/okhttp/okhttp/2.7.4/okhttp-2.7.4.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/com/github/tototoshi/scala-csv_2.12/1.3.10/scala-csv_2.12-1.3.10.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/io/grpc/grpc-services/1.33.0/grpc-services-1.33.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/com/google/auth/google-auth-library-credentials/0.20.0/google-auth-library-credentials-0.20.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../plugin/apache-maven-3.8.6/repository/io/netty/netty-buffer/4.1.17.Final/netty-buffer-4.1.17.Final.jar" path-in-jar="/" />
