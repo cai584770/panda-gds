@@ -1,7 +1,6 @@
 package panda.algo
 
-import org.cai.pandadb.graph.{GraphConversion, LoadDataFromPandaDB}
-import org.grapheco.pandadb.GraphDataBaseBuilder
+import org.cai.graph.{GraphConversion, LoadDataFromPandaDB}
 import org.junit.jupiter.api.Test
 import org.neo4j.gds.RelationshipType
 import org.neo4j.gds.core.huge.HugeGraph

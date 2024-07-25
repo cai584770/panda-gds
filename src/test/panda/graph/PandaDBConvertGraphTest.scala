@@ -1,6 +1,6 @@
 package panda.graph
 
-import org.cai.pandadb.graph.{GraphConversion, LoadDataFromPandaDB}
+import org.cai.graph.{GraphConversion, LoadDataFromPandaDB}
 import org.grapheco.lynx.LynxRecord
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.pandadb.graph.PandaNode

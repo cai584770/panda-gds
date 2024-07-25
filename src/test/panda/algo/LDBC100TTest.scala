@@ -1,7 +1,7 @@
 package panda.algo
 
-import org.cai.pandadb.algoconfig.{PandaLabelPropagationConfig, PandaLouvainConfig, PandaPageRankConfig}
-import org.cai.pandadb.graph.{GraphConversion, LoadDataFromPandaDB}
+import org.cai.algoconfig.{PandaLabelPropagationConfig, PandaLouvainConfig, PandaPageRankConfig}
+import org.cai.graph.{GraphConversion, LoadDataFromPandaDB}
 import org.grapheco.pandadb.graph.PandaNode
 import org.junit.jupiter.api.Test
 import org.neo4j.gds.RelationshipType

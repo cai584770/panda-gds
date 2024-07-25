@@ -1,7 +1,7 @@
 package panda.algo
 
-import org.cai.pandadb.algoconfig.PandaBetweennessCentralityConfig
-import org.cai.pandadb.graph.{GraphConversion, LoadDataFromPandaDB}
+import org.cai.algoconfig.PandaBetweennessCentralityConfig
+import org.cai.graph.{GraphConversion, LoadDataFromPandaDB}
 import org.junit.jupiter.api.Test
 import org.neo4j.gds.RelationshipType
 import org.neo4j.gds.collections.haa.HugeAtomicDoubleArray

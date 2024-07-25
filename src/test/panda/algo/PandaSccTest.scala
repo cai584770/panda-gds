@@ -1,7 +1,7 @@
 package panda.algo
 
-import org.cai.pandadb.algoconfig.PandaSCCConfig
-import org.cai.pandadb.graph.{GraphConversion, LoadDataFromPandaDB}
+import org.cai.algoconfig.PandaSCCConfig
+import org.cai.graph.{GraphConversion, LoadDataFromPandaDB}
 import org.junit.jupiter.api.Test
 import org.neo4j.gds.RelationshipType
 

@@ -1,7 +1,6 @@
 package panda.algo
 
-import com.google.gson.annotations.Until
-import org.cai.pandadb.graph.{GraphConversion, LoadDataFromPandaDB}
+import org.cai.graph.{GraphConversion, LoadDataFromPandaDB}
 import org.junit.jupiter.api.Test
 import org.neo4j.gds.RelationshipType
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker
