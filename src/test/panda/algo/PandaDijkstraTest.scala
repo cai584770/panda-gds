@@ -1,6 +1,8 @@
 package panda.algo
 
+import org.cai.algoconfig.PandaDijkstraSingleSourceShortestConfig
 import org.cai.graph.{GraphConversion, LoadDataFromPandaDB}
+import org.grapheco.lynx.types.LynxValue
 import org.junit.jupiter.api.Test
 import org.neo4j.gds.RelationshipType
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker
@@ -40,9 +42,35 @@ class PandaDijkstraTest {
     val builder: AllShortestPathsDijkstraStreamConfigImpl.Builder = AllShortestPathsDijkstraStreamConfigImpl.builder.concurrency(1)
     val config: AllShortestPathsDijkstraStreamConfig = builder.sourceNode(hg.toOriginalNodeId(1L)).build
 
+    println(hg.toOriginalNodeId(1L))
+
     val result: util.Set[PathResult] = Dijkstra.singleSource(hg,config,false,Optional.empty[Dijkstra.HeuristicFunction], ProgressTracker.NULL_TRACKER, TerminationFlag.RUNNING_TRUE).compute().pathSet()
 
     println(result)
 
   }
+
+  @Test
+  def dijkstraSSS: Unit = {
+    println(hg.toOriginalNodeId(1L))
+
+    val dijkstraSingleSourceShortestResult: util.Set[PathResult] = PandaDijkstraSingleSourceShortestConfig.dijkstraSingleSourceShortest(hg, hg.toOriginalNodeId(1L), 1,false, Optional.empty[Dijkstra.HeuristicFunction], ProgressTracker.NULL_TRACKER, TerminationFlag.RUNNING_TRUE)
+
+    println(dijkstraSingleSourceShortestResult)
+
+    var idsResult: Array[Array[Long]] = Array.empty[Array[Long]]
+
+    val iterator = dijkstraSingleSourceShortestResult.iterator
+    while (iterator.hasNext) {
+      val dijkstraResult = iterator.next()
+      idsResult = idsResult :+ dijkstraResult.nodeIds()
+    }
+
+    val result: LynxValue = LynxValue.apply(idsResult)
+
+
+    println(result)
+
+  }
+
 }

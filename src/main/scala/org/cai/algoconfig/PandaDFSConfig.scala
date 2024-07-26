@@ -13,14 +13,15 @@ import org.neo4j.gds.paths.traverse.{Aggregator, DFS, DfsBaseConfig, ExitPredica
 object PandaDFSConfig {
 
   def DFS(hugeGraph: HugeGraph,
+          source:Long,
           exitPredicate: ExitPredicate,
           aggregatorFunction: Aggregator = Aggregator.NO_AGGREGATION,
           maxDepth: Long = DfsBaseConfig.NO_MAX_DEPTH,
           progressTracker: ProgressTracker = ProgressTracker.NULL_TRACKER
          ): Array[Long] = {
     new DFS(hugeGraph,
-      hugeGraph.toMappedNodeId(1L),
-      (s: Long, t: Long, w: Double) => Result.FOLLOW,
+      source,
+      exitPredicate,
       aggregatorFunction,
       maxDepth,
       progressTracker).compute.toArray

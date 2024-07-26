@@ -1,9 +1,13 @@
 package panda.functions
 
+import org.cai.graph.{GraphConversion, LoadDataFromPandaDB}
 import org.grapheco.lynx.LynxResult
+import org.grapheco.lynx.types.property.LynxString
 import org.grapheco.pandadb.GraphDataBaseBuilder
 import org.grapheco.pandadb.graph.{LazyPandaRelationship, PandaNode}
 import org.junit.Test
+import org.neo4j.gds.RelationshipType
+import org.neo4j.gds.core.huge.HugeGraph
 
 
 /**
@@ -46,7 +50,7 @@ class PandaGDSTest {
     while (records.hasNext) {
       val record = records.next()
       val relationship = record.values.head.value
-//      println(relationship.getClass)
+      //      println(relationship.getClass)
       relationship match {
         case n: LazyPandaRelationship => println(s"id relationship:${n.startId}-${n.relationType}-${n.endId}")
         case _ => println("other")
@@ -74,6 +78,7 @@ class PandaGDSTest {
     tx.close()
     db.close()
   }
+
 
 
 }

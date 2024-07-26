@@ -1,0 +1,3 @@
+org.cai.plugins.CentralityEvaluationPlugin
+org.cai.plugins.CommunityDetectionPlugin
+org.cai.plugins.PathSearchPlugin

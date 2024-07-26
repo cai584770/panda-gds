@@ -12,7 +12,7 @@ class ControlsTest {
 
   @Test
   def matchSomeNodes(): Unit = {
-    val path = "/home/cjw/ldbc100t.db"
+    val path = "/home/cjw/lsbc.db"
     val db = GraphDataBaseBuilder.newEmbeddedDatabase(path)
     val tx = db.beginTransaction()
     val result = tx.executeQuery("match (n:Person) return n limit 100;")
