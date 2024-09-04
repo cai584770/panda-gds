@@ -1,6 +1,6 @@
 package org.cai.plugins
 
-import org.cai.AlgoFunc.CentralityEvaluationFunctions
+import org.cai.algofunc.CentralityEvaluationFunctions
 import org.grapheco.pandadb.plugin.typesystem.ExtensionTypePlugin
 
 /**

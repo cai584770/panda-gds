@@ -1,6 +1,6 @@
 package org.cai.plugins
 
-import org.cai.AlgoFunc.CommunityDetectionFunctions
+import org.cai.algofunc.CommunityDetectionFunctions
 import org.grapheco.pandadb.plugin.typesystem.ExtensionTypePlugin
 
 /**

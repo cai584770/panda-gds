@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="pandagds">
-    <output-path>$PROJECT_DIR$/out/artifacts/pandagds</output-path>
-    <root id="archive" name="pandagds.jar">
-      <element id="module-output" name="panda-gds" />
-    </root>
-  </artifact>
-</component>

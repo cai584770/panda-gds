@@ -12,7 +12,7 @@ class CreateDBTest {
 
   @Test
   def delete(): Unit = {
-    val path = "/home/cjw/dijkstra.db"
+    val path = "/home/cjw/tc.db"
     val db = GraphDataBaseBuilder.newEmbeddedDatabase(path)
     val tx = db.beginTransaction()
     tx.executeQuery("MATCH ()-[r]->() DELETE r")
@@ -209,5 +209,78 @@ class CreateDBTest {
     tx.close()
     db.close()
   }
+
+  @Test
+  def createWCCDB(): Unit = {
+    val path = "/home/cjw/wcc.db"
+    val db = GraphDataBaseBuilder.newEmbeddedDatabase(path)
+    val tx = db.beginTransaction()
+
+    tx.executeQuery(
+      """
+        |CREATE
+        |  (a:Node),
+        |  (b:Node),
+        |  (c:Node),
+        |  (d:Node),
+        |  (e:Node),
+        |  (f:Node),
+        |  (g:Node),
+        |  (h:Node),
+        |  (i:Node),
+        |  (j:Node),
+        |  (a)-[:TYPE]->(b),
+        |  (b)-[:TYPE]->(c),
+        |  (c)-[:TYPE]->(d),
+        |  (d)-[:TYPE]->(a),
+        |  (e)-[:TYPE]->(f),
+        |  (f)-[:TYPE]->(g),
+        |  (g)-[:TYPE]->(e),
+        |  (i)-[:TYPE]->(h),
+        |  (h)-[:TYPE]->(i);
+        |""".stripMargin
+    )
+    val result = tx.executeQuery("match (n) return n;")
+    result.show()
+    tx.commit()
+    tx.close()
+    db.close()
+  }
+
+  @Test
+  def createTringleCountingDB(): Unit = {
+    val path = "/home/cjw/tc1.db"
+    val db = GraphDataBaseBuilder.newEmbeddedDatabase(path)
+    val tx = db.beginTransaction()
+
+    tx.executeQuery(
+      """
+        |CREATE
+        |  (a0:node),
+        |  (a1:node),
+        |  (a2:node),
+        |  (a3:node),
+        |  (a4:node),
+        |  (aCenter:node),
+        |  (a0)-[:R]->(a1),
+        |  (a1)-[:R]->(a2),
+        |  (a2)-[:R]->(a3),
+        |  (a3)-[:R]->(a4),
+        |  (a4)-[:R]->(a0),
+        |  (aCenter)-[:R]->(a3),
+        |  (aCenter)-[:R]->(a4),
+        |  (aCenter)-[:R]->(a0),
+        |  (aCenter)-[:R]->(a1),
+        |  (aCenter)-[:R]->(a2);
+        |""".stripMargin
+    )
+    val result = tx.executeQuery("MATCH (n)-[r]->(m) RETURN n, r, m;")
+    result.show(100)
+    tx.commit()
+    tx.close()
+    db.close()
+  }
+
+
 
 }

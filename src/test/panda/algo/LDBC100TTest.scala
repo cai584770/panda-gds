@@ -1,6 +1,7 @@
 package panda.algo
 
-import org.cai.algoconfig.{PandaLabelPropagationConfig, PandaLouvainConfig, PandaPageRankConfig}
+import org.cai.algoconfig.centrality.PandaPageRankConfig
+import org.cai.algoconfig.community.{PandaLabelPropagationConfig, PandaLouvainConfig}
 import org.cai.graph.{GraphConversion, LoadDataFromPandaDB}
 import org.grapheco.pandadb.graph.PandaNode
 import org.junit.jupiter.api.Test

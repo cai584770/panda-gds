@@ -1,6 +1,6 @@
 package panda.algo
 
-import org.cai.algoconfig.PandaLouvainConfig
+import org.cai.algoconfig.community.PandaLouvainConfig
 import org.cai.graph.{GraphConversion, LoadDataFromPandaDB}
 import org.junit.jupiter.api.Test
 import org.neo4j.gds.RelationshipType

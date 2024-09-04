@@ -1,6 +1,6 @@
 package org.cai.plugins
 
-import org.cai.AlgoFunc.PathSearchFunctions
+import org.cai.algofunc.PathSearchFunctions
 import org.grapheco.pandadb.plugin.typesystem.ExtensionTypePlugin
 
 /**
@@ -13,5 +13,5 @@ class PathSearchPlugin extends ExtensionTypePlugin {
     registerFunction(classOf[PathSearchFunctions])
   }
 
-  override def getName: String = "PathSearchPluginPlugin"
+  override def getName: String = "PathSearchPlugin"
 }

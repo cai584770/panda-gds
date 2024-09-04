@@ -1,6 +1,6 @@
 package panda.algo
 
-import org.cai.algoconfig.PandaDijkstraSingleSourceShortestConfig
+import org.cai.algoconfig.path.PandaDijkstraSingleSourceShortestConfig
 import org.cai.graph.{GraphConversion, LoadDataFromPandaDB}
 import org.grapheco.lynx.types.LynxValue
 import org.junit.jupiter.api.Test
@@ -24,7 +24,6 @@ class PandaDijkstraTest {
   private val (nodeResult, relationshipResult) = LoadDataFromPandaDB.getNodeAndRelationship(dbPath, "Node", "TYPE")
 
   private val hg = GraphConversion.convertWithNodeLabel(nodeResult, relationshipResult, RelationshipType.of("TYPE"))
-
 
   @Test
   def shortestPathDijkstraStreamConfigImpl:Unit={

@@ -1,6 +1,7 @@
 package panda.convert
 
-import org.cai.algoconfig.{PandaBFSConfig, PandaDFSConfig, PandaDijkstraSingleSourceShortestConfig, PandaDijkstraSourceTargetShortestConfig, PandaLouvainConfig}
+import org.cai.algoconfig.community.PandaLouvainConfig
+import org.cai.algoconfig.path.{PandaBFSConfig, PandaDFSConfig, PandaDijkstraSingleSourceShortestConfig, PandaDijkstraSourceTargetShortestConfig}
 import org.cai.graph.{GraphConversion, LoadDataFromPandaDB}
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.composite.LynxList

@@ -1,6 +1,6 @@
 package panda.algo
 
-import org.cai.algoconfig.PandaBetweennessCentralityConfig
+import org.cai.algoconfig.centrality.PandaBetweennessCentralityConfig
 import org.cai.graph.{GraphConversion, LoadDataFromPandaDB}
 import org.junit.jupiter.api.Test
 import org.neo4j.gds.RelationshipType

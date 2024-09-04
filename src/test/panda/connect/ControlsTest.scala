@@ -66,4 +66,16 @@ class ControlsTest {
     db.close()
   }
 
+  @Test
+  def getAllNodesAndRelationships(): Unit = {
+    val path = "/home/cjw/tc.db"
+    val db = GraphDataBaseBuilder.newEmbeddedDatabase(path)
+    val tx = db.beginTransaction()
+    val result = tx.executeQuery("MATCH (n)-[r]->(m) RETURN n, r, m;")
+    result.show(100)
+    tx.commit()
+    tx.close()
+    db.close()
+  }
+
 }
