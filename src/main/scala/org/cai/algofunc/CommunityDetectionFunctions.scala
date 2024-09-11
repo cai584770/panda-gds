@@ -30,9 +30,9 @@ class CommunityDetectionFunctions extends TypeFunctions {
 
   @LynxProcedure(name = "Louvain.compute")
   def computeLouvain(
-               @LynxProcedureArgument(name = "nodeLabel") nodeLabel: LynxList,
-               @LynxProcedureArgument(name = "relationshipLabel") relationshipLabel: LynxString
-             ): LynxValue = {
+                      @LynxProcedureArgument(name = "nodeLabel") nodeLabel: LynxString,
+                      @LynxProcedureArgument(name = "relationshipLabel") relationshipLabel: LynxString
+                    ): LynxValue = {
     val tolerance: Double = TOLERANCE_DEFAULT
     val maxIterations: Int = 10
     val includeIntermediateCommunities: Boolean = true
@@ -50,7 +50,7 @@ class CommunityDetectionFunctions extends TypeFunctions {
 
     val hugeGraph = GraphConversion.convertWithId(nodeRecords, relationshipsRecords, RelationshipType.of(relationshipLabel.value))
 
-    val (dendrogram,modularities): (Array[HugeLongArray], Array[Double]) = PandaLouvainConfig.louvain(hugeGraph, tolerance, maxIterations, includeIntermediateCommunities, concurrency, progressTracker, executorService, terminationFlag)
+    val (dendrogram, modularities): (Array[HugeLongArray], Array[Double]) = PandaLouvainConfig.louvain(hugeGraph, tolerance, maxIterations, includeIntermediateCommunities, concurrency, progressTracker, executorService, terminationFlag)
 
     val modularitiesLynx: LynxValue = LynxValue.apply(modularities)
 
@@ -68,9 +68,9 @@ class CommunityDetectionFunctions extends TypeFunctions {
 
   @LynxProcedure(name = "LabelPropagation.compute")
   def computeLP(
-               @LynxProcedureArgument(name = "nodeLabel") nodeLabel: LynxString,
-               @LynxProcedureArgument(name = "relationshipLabel") relationshipLabel: LynxString,
-                            ): LynxValue = {
+                 @LynxProcedureArgument(name = "nodeLabel") nodeLabel: LynxString,
+                 @LynxProcedureArgument(name = "relationshipLabel") relationshipLabel: LynxString,
+               ): LynxValue = {
 
     val concurrency: Int = 1
     val maxIterations: Int = 10
@@ -98,9 +98,9 @@ class CommunityDetectionFunctions extends TypeFunctions {
 
   @LynxProcedure(name = "WCC.compute")
   def computeWCC(
-                 @LynxProcedureArgument(name = "nodeLabel") nodeLabel: LynxString,
-                 @LynxProcedureArgument(name = "relationshipLabel") relationshipLabel: LynxString,
-               ): LynxValue = {
+                  @LynxProcedureArgument(name = "nodeLabel") nodeLabel: LynxString,
+                  @LynxProcedureArgument(name = "relationshipLabel") relationshipLabel: LynxString,
+                ): LynxValue = {
 
     val javaMap: JMap[String, Object] = JMap.of(
       "threshold", 3.14.asInstanceOf[AnyRef],
@@ -118,7 +118,7 @@ class CommunityDetectionFunctions extends TypeFunctions {
 
     val hugeGraph = GraphConversion.convertWithId(nodeRecords, relationshipsRecords, RelationshipType.of(relationshipLabel.value))
 
-    val pandaWCCResult: Array[Long] = PandaWCCConfig.wcc(hugeGraph, javaMap ,progressTracker)
+    val pandaWCCResult: Array[Long] = PandaWCCConfig.wcc(hugeGraph, javaMap, progressTracker)
 
     val lynxResult: LynxValue = LynxValue.apply(pandaWCCResult)
 
@@ -127,9 +127,9 @@ class CommunityDetectionFunctions extends TypeFunctions {
 
   @LynxProcedure(name = "TriangleCount.compute")
   def computeTriangleCount(
-                 @LynxProcedureArgument(name = "nodeLabel") nodeLabel: LynxString,
-                 @LynxProcedureArgument(name = "relationshipLabel") relationshipLabel: LynxString,
-               ): LynxValue = {
+                            @LynxProcedureArgument(name = "nodeLabel") nodeLabel: LynxString,
+                            @LynxProcedureArgument(name = "relationshipLabel") relationshipLabel: LynxString,
+                          ): LynxValue = {
 
     val javaMap: JMap[String, Object] = null
     val executorService: ExecutorService = DefaultPool.INSTANCE
