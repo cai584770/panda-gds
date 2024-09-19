@@ -19,7 +19,6 @@ import scala.collection.immutable
  */
 object GraphConversion {
 
-
   def convertWithId(nodesRecordsList: immutable.Seq[LynxRecord], relationshipsRecordList: immutable.Seq[LynxRecord], relationshipType: RelationshipType): HugeGraph = {
     val nodesCount = nodesRecordsList.length
     val lastNode: LynxRecord = nodesRecordsList.last
@@ -124,6 +123,62 @@ object GraphConversion {
 
   }
 
+  def idMap(nodesRecordsList: immutable.Seq[LynxRecord],
+            relationshipsRecordList: immutable.Seq[LynxRecord],
+            relationshipType: RelationshipType): Unit = {
+    val nodesCount: Int = nodesRecordsList.length
+
+//    find last id => get max node id
+//    val lastNode: LynxRecord = nodesRecordsList.last
+//    val maxNodeId: Long = lastNode.values.head.value match {
+//      case pn: PandaNode => pn.longId
+//      case _ => println("Max Node Id Not Found!")
+//        0L
+//    }
+
+//    init id map
+    val originalIds = new Array[Long](nodesCount)
+    val mappedIds = new Array[Long](nodesCount)
+    var idsCursor: Int = 0
+
+    val nodesBuilder = GraphFactory.initNodesBuilder.nodeCount(nodesCount).maxOriginalId(nodesCount).hasLabelInformation(false).build
+
+    nodesRecordsList.foreach {
+      n =>
+        val record = n.values.head.value
+        record match {
+          case pn: PandaNode =>
+            originalIds(idsCursor) = pn.longId
+            mappedIds(idsCursor) = idsCursor
+            nodesBuilder.addNode(idsCursor)
+            idsCursor += 1
+          case _ => println("Panda Node?")
+        }
+    }
+
+    val nodes = nodesBuilder.build()
+
+    val relationshipsBuilder: RelationshipsBuilder = GraphFactory
+      .initRelationshipsBuilder.nodes(nodes.idMap).relationshipType(relationshipType).orientation(Orientation.NATURAL).build
+
+    relationshipsRecordList.foreach {
+      n =>
+        val record = n.values.head.value
+        record match {
+          case pr: LazyPandaRelationship =>
+            val startNodeId = pr.startId
+            val endNodeId = pr.endId
+            relationshipsBuilder.add(startNodeId, endNodeId)
+          case _ => println("Panda Relationship?")
+        }
+    }
+
+    val relationships: SingleTypeRelationships = relationshipsBuilder.build()
+
+    val idMap = new IdMap(originalIds, mappedIds)
+
+    (idMap,GraphFactory.create(nodes.idMap, relationships))
+  }
 
 
 }

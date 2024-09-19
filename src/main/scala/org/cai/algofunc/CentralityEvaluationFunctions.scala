@@ -2,6 +2,7 @@ package org.cai.algofunc
 
 import org.cai.algoconfig.centrality.{PandaBetweennessCentralityConfig, PandaPageRankConfig}
 import org.cai.graph.GraphConversion
+import org.grapheco.lynx.LynxRecord
 import org.grapheco.lynx.func.{LynxProcedure, LynxProcedureArgument}
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.property.LynxString
@@ -17,6 +18,7 @@ import org.neo4j.gds.pagerank.PageRankAlgorithmFactory.Mode
 
 import java.util.concurrent.ExecutorService
 import java.util.function.LongToDoubleFunction
+import scala.collection.immutable
 
 /**
  * @author cai584770
@@ -77,8 +79,8 @@ class CentralityEvaluationFunctions extends TypeFunctions {
     val relationshipsQuery: String = s"MATCH (n:${nodeLabel})-[r:${relationshipLabel}]->(m:${nodeLabel}) RETURN r;"
     val tx: PandaTransaction = embeddedDB.beginTransaction()
 
-    val nodeRecords = tx.executeQuery(nodesQuery).records().toList
-    val relationshipsRecords = tx.executeQuery(relationshipsQuery).records().toList
+    val nodeRecords: immutable.Seq[LynxRecord] = tx.executeQuery(nodesQuery).records().toList
+    val relationshipsRecords: immutable.Seq[LynxRecord] = tx.executeQuery(relationshipsQuery).records().toList
 
     val hugeGraph = GraphConversion.convertWithId(nodeRecords, relationshipsRecords, RelationshipType.of(relationshipLabel.value))
 

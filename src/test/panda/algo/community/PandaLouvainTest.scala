@@ -1,4 +1,4 @@
-package panda.algo
+package panda.algo.community
 
 import org.cai.algoconfig.community.PandaLouvainConfig
 import org.cai.graph.{GraphConversion, LoadDataFromPandaDB}
