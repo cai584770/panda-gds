@@ -33,7 +33,7 @@ object PandaLouvainConfig {
       .maxIterations(maxIterations)
       .tolerance(tolerance)
       .includeIntermediateCommunities(includeIntermediateCommunities)
-      .concurrency(concurrency)
+      .concurrency(concurrency).minCommunitySize(1)
       .build
 
     val louvain = new Louvain(

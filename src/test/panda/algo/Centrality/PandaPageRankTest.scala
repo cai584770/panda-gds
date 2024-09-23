@@ -8,6 +8,8 @@ import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker
 import org.neo4j.gds.pagerank.PageRankAlgorithmFactory.Mode
 import org.neo4j.gds.pagerank.{PageRankAlgorithmFactory, PageRankStreamConfig, PageRankStreamConfigImpl}
 
+import java.util.function.LongToDoubleFunction
+
 /**
  * @author cai584770
  * @date 2024/7/12 12:08
@@ -25,7 +27,7 @@ class PandaPageRankTest {
   def pageRankTest(): Unit = {
     val build: PageRankStreamConfig = PageRankStreamConfigImpl.builder.maxIterations(20).concurrency(1).tolerance(0).dampingFactor(0.85).build
 
-    val pageRankResult = new PageRankAlgorithmFactory(Mode.PAGE_RANK).build(hg, build, ProgressTracker.NULL_TRACKER).compute().centralityScoreProvider()
+    val pageRankResult: LongToDoubleFunction = new PageRankAlgorithmFactory(Mode.PAGE_RANK).build(hg, build, ProgressTracker.NULL_TRACKER).compute().centralityScoreProvider()
 
     println(pageRankResult)
 

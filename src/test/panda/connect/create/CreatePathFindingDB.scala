@@ -11,21 +11,27 @@ import org.junit.jupiter.api.Test
 class CreatePathFindingDB {
 
   @Test
-  def createDijkstraDB(): Unit = {
-    val path = "/home/cjw/dijkstra.db"
+  def createDijkstraSourceTargetShortestPathDB(): Unit = {
+    val path = "/home/cjw/db/dstsp.db"
     val db = GraphDataBaseBuilder.newEmbeddedDatabase(path)
     val tx = db.beginTransaction()
     tx.executeQuery(
       """
-        |CREATE
-        |(a:Node{name: 'a'}), (b:Node{name: 'b'}), (c:Node{name: 'c'}), (d:Node{name: 'd'}), (e:Node{name: 'e'}), (f:Node{name: 'f'}),
-        |(a)-[:TYPE {cost: 4}]->(b),
-        |(a)-[:TYPE {cost: 2}]->(c),
-        |(b)-[:TYPE {cost: 5}]->(c),
-        |(b)-[:TYPE {cost: 10}]->(d),
-        |(c)-[:TYPE {cost: 3}]->(e),
-        |(d)-[:TYPE {cost: 11}]->(f),
-        |(e)-[:TYPE {cost: 4}]->(d)
+        |CREATE (a:Location {name: 'A'}),
+        |       (b:Location {name: 'B'}),
+        |       (c:Location {name: 'C'}),
+        |       (d:Location {name: 'D'}),
+        |       (e:Location {name: 'E'}),
+        |       (f:Location {name: 'F'}),
+        |       (a)-[:ROAD {cost: 50}]->(b),
+        |       (a)-[:ROAD {cost: 50}]->(c),
+        |       (a)-[:ROAD {cost: 100}]->(d),
+        |       (b)-[:ROAD {cost: 40}]->(d),
+        |       (c)-[:ROAD {cost: 40}]->(d),
+        |       (c)-[:ROAD {cost: 80}]->(e),
+        |       (d)-[:ROAD {cost: 30}]->(e),
+        |       (d)-[:ROAD {cost: 80}]->(f),
+        |       (e)-[:ROAD {cost: 40}]->(f);
         |""".stripMargin
     )
     val result = tx.executeQuery("match (n) return n;")
@@ -37,12 +43,28 @@ class CreatePathFindingDB {
 
   @Test
   def createDSSSPDB(): Unit = {
-    val path = "/home/cjw/dsssp.db"
+    val path = "/home/cjw/db/dsssp.db"
     val db = GraphDataBaseBuilder.newEmbeddedDatabase(path)
     val tx = db.beginTransaction()
-    tx.executeQuery(
-      "CREATE (a:A), (b:B), (c:C), (d:D), (e:E), (f:F), (a)-[:TYPE {cost: 4}]->(b), (a)-[:TYPE {cost: 2}]->(c), (b)-[:TYPE {cost: 5}]->(c), (b)-[:TYPE {cost: 10}]->(d), (c)-[:TYPE {cost: 3}]->(e), (d)-[:TYPE {cost: 11}]->(f), (e)-[:TYPE {cost: 4}]->(d)"
-    )
+    val query =
+      """
+        |CREATE (a:Location {name: 'A'}),
+        |       (b:Location {name: 'B'}),
+        |       (c:Location {name: 'C'}),
+        |       (d:Location {name: 'D'}),
+        |       (e:Location {name: 'E'}),
+        |       (f:Location {name: 'F'}),
+        |       (a)-[:ROAD {cost: 50}]->(b),
+        |       (a)-[:ROAD {cost: 50}]->(c),
+        |       (a)-[:ROAD {cost: 100}]->(d),
+        |       (b)-[:ROAD {cost: 40}]->(d),
+        |       (c)-[:ROAD {cost: 40}]->(d),
+        |       (c)-[:ROAD {cost: 80}]->(e),
+        |       (d)-[:ROAD {cost: 30}]->(e),
+        |       (d)-[:ROAD {cost: 80}]->(f),
+        |       (e)-[:ROAD {cost: 40}]->(f);
+        |""".stripMargin
+    tx.executeQuery(query)
     val result = tx.executeQuery("match (n) return n;")
     result.show()
     tx.commit()
@@ -51,14 +73,53 @@ class CreatePathFindingDB {
   }
 
   @Test
-  def createDFSBFSDB(): Unit = {
-    val path = "/home/cjw/bfs.db"
+  def createBFSDB(): Unit = {
+    val path = "/home/cjw/db/bfs.db"
     val db = GraphDataBaseBuilder.newEmbeddedDatabase(path)
     val tx = db.beginTransaction()
 
-    var query = "CREATE " + "  (a:Node)" + ", (b:Node)" + ", (c:Node)" + ", (d:Node)" + ", (e:Node)" + ", (f:Node)" + ", (g:Node)" + ", (a)-[:REL {cost:2.0}]->(b)" + ", (a)-[:REL {cost:1.0}]->(c)" + ", (b)-[:REL {cost:1.0}]->(d)" + ", (c)-[:REL {cost:2.0}]->(d)" + ", (d)-[:REL {cost:1.0}]->(e)" + ", (d)-[:REL {cost:2.0}]->(f)" + ", (e)-[:REL {cost:2.0}]->(g)" + ", (f)-[:REL {cost:1.0}]->(g)"
+    val query =
+      """
+        |CREATE
+        |(nA:Node {name: 'A'}),
+        |(nB:Node {name: 'B'}),
+        |(nC:Node {name: 'C'}),
+        |(nD:Node {name: 'D'}),
+        |(nE:Node {name: 'E'}),
+        |
+        |(nA)-[:REL]->(nB),
+        |(nA)-[:REL]->(nC),
+        |(nB)-[:REL]->(nE),
+        |(nC)-[:REL]->(nD);
+        |""".stripMargin
+    tx.executeQuery(query)
+    val result = tx.executeQuery("match (n) return n;")
+    result.show()
+    tx.commit()
+    tx.close()
+    db.close()
+  }
 
-    query = "CREATE (a:Node)" + ", (b:Node)" + ", (c:Node)" + ", (d:Node)" + ", (e:Node)" + ", (f:Node)" + ", (g:Node)" + ", (a)-[:REL {cost:2.0}]->(b)" + ", (a)-[:REL {cost:1.0}]->(c)" + ", (b)-[:REL {cost:1.0}]->(d)" + ", (c)-[:REL {cost:2.0}]->(d)" + ", (d)-[:REL {cost:1.0}]->(e)" + ", (d)-[:REL {cost:2.0}]->(f)" + ", (e)-[:REL {cost:2.0}]->(g)" + ", (f)-[:REL {cost:1.0}]->(g)"
+  @Test
+  def createDFSDB(): Unit = {
+    val path = "/home/cjw/db/dfs.db"
+    val db = GraphDataBaseBuilder.newEmbeddedDatabase(path)
+    val tx = db.beginTransaction()
+
+    val query =
+      """
+        |CREATE
+        |(nA:Node {name: 'A'}),
+        |(nB:Node {name: 'B'}),
+        |(nC:Node {name: 'C'}),
+        |(nD:Node {name: 'D'}),
+        |(nE:Node {name: 'E'}),
+        |
+        |(nA)-[:REL]->(nB),
+        |(nA)-[:REL]->(nC),
+        |(nB)-[:REL]->(nE),
+        |(nC)-[:REL]->(nD);
+        |""".stripMargin
     tx.executeQuery(query)
     val result = tx.executeQuery("match (n) return n;")
     result.show()

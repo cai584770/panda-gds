@@ -16,7 +16,7 @@ object PandaPageRankConfig {
 
   def pageRank(
                 hugeGraph: HugeGraph,
-                maxIterations: Int = 40,
+                maxIterations: Int = 20,
                 concurrency: Int = 1,
                 tolerance: Int = 0,
                 mode: Mode = Mode.PAGE_RANK,
@@ -27,6 +27,7 @@ object PandaPageRankConfig {
       .maxIterations(maxIterations)
       .concurrency(concurrency)
       .tolerance(tolerance)
+      .dampingFactor(0.85)
       .build
 
     new PageRankAlgorithmFactory(mode).build(hugeGraph, config, progressTracker).compute().centralityScoreProvider()

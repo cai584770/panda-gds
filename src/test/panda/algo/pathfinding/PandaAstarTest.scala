@@ -1,4 +1,4 @@
-package panda.algo
+package panda.algo.pathfinding
 
 import org.cai.graph.{GraphConversion, LoadDataFromPandaDB}
 import org.junit.jupiter.api.Test

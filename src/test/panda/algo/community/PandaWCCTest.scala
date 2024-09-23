@@ -1,4 +1,4 @@
-package panda.algo
+package panda.algo.community
 
 import org.cai.graph.{GraphConversion, LoadDataFromPandaDB}
 import org.junit.jupiter.api.Test
@@ -9,9 +9,6 @@ import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker
 import org.neo4j.gds.wcc.{WccAlgorithmFactory, WccBaseConfig, WccMutateConfigImpl}
 
 import java.util.{Map => JMap}
-import java.util
-import java.util.Map
-import scala.collection.mutable
 
 /**
  * @author cai584770
@@ -21,11 +18,11 @@ import scala.collection.mutable
 class PandaWCCTest {
 
   @Test
-  def testOutFunction:Unit={
-    val dbPath = "/home/cjw/wcc.db"
-    val (nodeResult, relationshipResult) = LoadDataFromPandaDB.getNodeAndRelationship(dbPath, "Node", "TYPE")
+  def WccTest:Unit={
+    val dbPath = "/home/cjw/db/wcc.db"
+    val (nodeResult, relationshipResult) = LoadDataFromPandaDB.getNodeAndRelationship(dbPath, "User", "LINK")
 
-    val hg = GraphConversion.convertWithId(nodeResult, relationshipResult, RelationshipType.of("TYPE"))
+    val hg = GraphConversion.convertWithId(nodeResult, relationshipResult, RelationshipType.of("LINK"))
 
     val javaMap: JMap[String, Object] = JMap.of(
       "threshold", 3.14.asInstanceOf[AnyRef],
@@ -37,26 +34,22 @@ class PandaWCCTest {
 
     val result: DisjointSetStruct = new WccAlgorithmFactory[WccBaseConfig]().build(hg, config, ProgressTracker.NULL_TRACKER).compute
 
-    println(result)
-    val communityData: Array[Long] = new Array[Long](hg.nodeCount().toInt)
+    val nodecount = hg.idMap().nodeCount().toInt
+
+    val communityData: Array[Long] = new Array[Long](nodecount)
     hg.forEachNode { nodeId =>
       communityData(nodeId.toInt) = result.setIdOf(nodeId)
       true
     }
 
-    println(communityData.mkString(","))
+    for (cursor <- 0 until nodecount) {
+      println(nodeResult(cursor).values + ":" + communityData(cursor))
+    }
 
   }
 
   @Test
   def testWithFunction: Unit = {
-    val dbPath = "/home/cjw/wcc.db"
-    val (nodeResult, relationshipResult) = LoadDataFromPandaDB.getNodeAndRelationship(dbPath, "Node", "TYPE")
-
-    val hg = GraphConversion.convertWithId(nodeResult, relationshipResult, RelationshipType.of("TYPE"))
-
-
-
 
   }
 

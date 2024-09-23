@@ -9,13 +9,14 @@ import org.junit.jupiter.api.Test
  * @Version
  */
 class CreateCommunityDetectionDB {
+
   /***
    * create louvain db example
    * https://neo4j.com/docs/graph-data-science/2.6/algorithms/louvain/#algorithms-louvain-examples
    */
   @Test
   def createLouvainDB(): Unit = {
-    val path = "/home/cjw/louvain.db"
+    val path = "/home/cjw/db/louvain.db"
     val db = GraphDataBaseBuilder.newEmbeddedDatabase(path)
     val tx = db.beginTransaction()
     tx.executeQuery(
@@ -48,7 +49,7 @@ class CreateCommunityDetectionDB {
 
   @Test
   def createLPDB(): Unit = {
-    val path = "/home/cjw/lp.db"
+    val path = "/home/cjw/db/lp.db"
     val db = GraphDataBaseBuilder.newEmbeddedDatabase(path)
     val tx = db.beginTransaction()
     tx.executeQuery(
@@ -80,32 +81,24 @@ class CreateCommunityDetectionDB {
 
   @Test
   def createWCCDB(): Unit = {
-    val path = "/home/cjw/wcc.db"
+    val path = "/home/cjw/db/wcc.db"
     val db = GraphDataBaseBuilder.newEmbeddedDatabase(path)
     val tx = db.beginTransaction()
 
     tx.executeQuery(
       """
         |CREATE
-        |  (a:Node),
-        |  (b:Node),
-        |  (c:Node),
-        |  (d:Node),
-        |  (e:Node),
-        |  (f:Node),
-        |  (g:Node),
-        |  (h:Node),
-        |  (i:Node),
-        |  (j:Node),
-        |  (a)-[:TYPE]->(b),
-        |  (b)-[:TYPE]->(c),
-        |  (c)-[:TYPE]->(d),
-        |  (d)-[:TYPE]->(a),
-        |  (e)-[:TYPE]->(f),
-        |  (f)-[:TYPE]->(g),
-        |  (g)-[:TYPE]->(e),
-        |  (i)-[:TYPE]->(h),
-        |  (h)-[:TYPE]->(i);
+        |  (nAlice:User {name: 'Alice'}),
+        |  (nBridget:User {name: 'Bridget'}),
+        |  (nCharles:User {name: 'Charles'}),
+        |  (nDoug:User {name: 'Doug'}),
+        |  (nMark:User {name: 'Mark'}),
+        |  (nMichael:User {name: 'Michael'}),
+        |
+        |  (nAlice)-[:LINK {weight: 0.5}]->(nBridget),
+        |  (nAlice)-[:LINK {weight: 4}]->(nCharles),
+        |  (nMark)-[:LINK {weight: 1.1}]->(nDoug),
+        |  (nMark)-[:LINK {weight: 2}]->(nMichael);
         |""".stripMargin
     )
     val result = tx.executeQuery("match (n) return n;")
@@ -117,29 +110,28 @@ class CreateCommunityDetectionDB {
 
   @Test
   def createTringleCountingDB(): Unit = {
-    val path = "/home/cjw/tc1.db"
+    val path = "/home/cjw/db/tc.db"
     val db = GraphDataBaseBuilder.newEmbeddedDatabase(path)
     val tx = db.beginTransaction()
 
     tx.executeQuery(
       """
         |CREATE
-        |  (a0:node),
-        |  (a1:node),
-        |  (a2:node),
-        |  (a3:node),
-        |  (a4:node),
-        |  (aCenter:node),
-        |  (a0)-[:R]->(a1),
-        |  (a1)-[:R]->(a2),
-        |  (a2)-[:R]->(a3),
-        |  (a3)-[:R]->(a4),
-        |  (a4)-[:R]->(a0),
-        |  (aCenter)-[:R]->(a3),
-        |  (aCenter)-[:R]->(a4),
-        |  (aCenter)-[:R]->(a0),
-        |  (aCenter)-[:R]->(a1),
-        |  (aCenter)-[:R]->(a2);
+        |  (alice:Person {name: 'Alice'}),
+        |  (michael:Person {name: 'Michael'}),
+        |  (karin:Person {name: 'Karin'}),
+        |  (chris:Person {name: 'Chris'}),
+        |  (will:Person {name: 'Will'}),
+        |  (mark:Person {name: 'Mark'}),
+        |
+        |  (michael)-[:KNOWS]->(karin),
+        |  (michael)-[:KNOWS]->(chris),
+        |  (will)-[:KNOWS]->(michael),
+        |  (mark)-[:KNOWS]->(michael),
+        |  (mark)-[:KNOWS]->(will),
+        |  (alice)-[:KNOWS]->(michael),
+        |  (will)-[:KNOWS]->(chris),
+        |  (chris)-[:KNOWS]->(karin)
         |""".stripMargin
     )
     val result = tx.executeQuery("MATCH (n)-[r]->(m) RETURN n, r, m;")

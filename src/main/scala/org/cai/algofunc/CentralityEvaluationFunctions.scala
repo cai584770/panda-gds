@@ -19,6 +19,7 @@ import org.neo4j.gds.pagerank.PageRankAlgorithmFactory.Mode
 import java.util.concurrent.ExecutorService
 import java.util.function.LongToDoubleFunction
 import scala.collection.immutable
+import scala.collection.mutable.ListBuffer
 
 /**
  * @author cai584770
@@ -44,23 +45,21 @@ class CentralityEvaluationFunctions extends TypeFunctions {
     val relationshipsQuery: String = s"MATCH (n:${nodeLabel})-[r:${relationshipLabel}]->(m:${nodeLabel}) RETURN r;"
     val tx: PandaTransaction = embeddedDB.beginTransaction()
 
-    val nodeRecords = tx.executeQuery(nodesQuery).records().toList
+    val nodeRecords: immutable.Seq[LynxRecord] = tx.executeQuery(nodesQuery).records().toList
     val relationshipsRecords = tx.executeQuery(relationshipsQuery).records().toList
 
     val hugeGraph = GraphConversion.convertWithId(nodeRecords, relationshipsRecords, RelationshipType.of(relationshipLabel.value))
 
     val betweennessCentralityResult: HugeAtomicDoubleArray = PandaBetweennessCentralityConfig.betweennessCentrality(hugeGraph, selectionStrategy, traverserFactory, executorService, concurrency, progressTracker)
 
-    var result: Array[Double] = Array.empty[Double]
+    val mapListBuffer = ListBuffer[Map[Any, Double]]()
 
     val count: Int = hugeGraph.idMap().nodeCount().toInt
     for (cursor <- 0 until count) {
-      result = result :+ betweennessCentralityResult.get(cursor.toLong)
+      mapListBuffer += Map(nodeRecords(cursor).values -> betweennessCentralityResult.get(cursor.toLong))
     }
 
-    val lynxResult: LynxValue = LynxValue.apply(result)
-
-    lynxResult
+    LynxValue(mapListBuffer.toList)
   }
 
   @LynxProcedure(name = "PageRank.compute")
@@ -86,16 +85,14 @@ class CentralityEvaluationFunctions extends TypeFunctions {
 
     val pageRankResult: LongToDoubleFunction = PandaPageRankConfig.pageRank(hugeGraph, maxIterations, concurrency, tolerance, mode, progressTracker)
 
-    var result: Array[Double] = Array.empty[Double]
+    val mapListBuffer = ListBuffer[Map[Any, Double]]()
 
     val count: Int = hugeGraph.idMap().nodeCount().toInt
     for (cursor <- 0 until count) {
-      result = result :+ pageRankResult.applyAsDouble(cursor.toLong)
+      mapListBuffer += Map(nodeRecords(cursor).values -> pageRankResult.applyAsDouble(cursor.toLong))
     }
 
-    val lynxResult: LynxValue = LynxValue.apply(result)
-
-    lynxResult
+    LynxValue(mapListBuffer.toList)
   }
 
 

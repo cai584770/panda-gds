@@ -1,10 +1,11 @@
-package panda.algo
+package panda.algo.pathfinding
 
 import org.cai.graph.{GraphConversion, LoadDataFromPandaDB}
 import org.grapheco.pandadb.graph.PandaNode
 import org.junit.jupiter.api.Test
 import org.neo4j.gds.RelationshipType
 import org.neo4j.gds.api.IdMap
+import org.neo4j.gds.collections.ha.HugeLongArray
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker
 import org.neo4j.gds.paths.traverse.ExitPredicate.Result
 import org.neo4j.gds.paths.traverse.{Aggregator, BFS, DFS, DfsBaseConfig}
@@ -15,7 +16,7 @@ import org.neo4j.gds.paths.traverse.{Aggregator, BFS, DFS, DfsBaseConfig}
  * @Version
  */
 class PandaDFSTest {
-  private val dbPath = "/home/cjw/bfs.db"
+  private val dbPath = "/home/cjw/db/dfs.db"
   private val (nodeResult, relationshipResult) = LoadDataFromPandaDB.getNodeAndRelationship(dbPath, "Node", "REL")
 
   private val hg = GraphConversion.convertWithNodeLabel(nodeResult, relationshipResult, RelationshipType.of("REL"))
@@ -24,29 +25,16 @@ class PandaDFSTest {
   def DFSTest(): Unit = {
     val result: Array[Long] = new DFS(hg, hg.toMappedNodeId(1L), (s: Long, t: Long, w: Double) => Result.FOLLOW, Aggregator.NO_AGGREGATION, DfsBaseConfig.NO_MAX_DEPTH, ProgressTracker.NULL_TRACKER).compute.toArray
 
+    val count: Int = result.length
+    for (cursor <- 0 until count) {
+      println(nodeResult(result(cursor).toInt).values + ":" + result(cursor))
+    }
+
     println(result.mkString("-"))
 
-  }
-
-  @Test
-  def BFSTest(): Unit = {
-    val source: Long = hg.toMappedNodeId(1L)
-    val target: Long = hg.toMappedNodeId(3L)
-
-    val nodes: Array[Long] = BFS.create(
-      hg,
-      source,
-      (s: Long, t: Long, w: Double) => if (t == target) Result.BREAK
-      else Result.FOLLOW,
-      (s: Long, t: Long, w: Double) => 1.0,
-      1,
-      ProgressTracker.NULL_TRACKER,
-      BFS.ALL_DEPTHS_ALLOWED
-    ).compute().toArray
-
-    println(nodes.mkString("-"))
 
   }
+
 
   @Test
   def idmap(): Unit = {

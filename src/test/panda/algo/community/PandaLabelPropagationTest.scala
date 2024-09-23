@@ -1,4 +1,4 @@
-package panda.algo
+package panda.algo.community
 
 import org.cai.graph.{GraphConversion, LoadDataFromPandaDB}
 import org.grapheco.pandadb.graph.PandaNode
@@ -16,7 +16,7 @@ import org.neo4j.gds.labelpropagation.{LabelPropagation, LabelPropagationStreamC
  */
 class PandaLabelPropagationTest {
 
-  private val dbPath = "/home/cjw/lp.db"
+  private val dbPath = "/home/cjw/db/lp.db"
   private val (nodeResult, relationshipResult) = LoadDataFromPandaDB.getNodeAndRelationship(dbPath, "User", "FOLLOW")
 
   private val hg = GraphConversion.convertWithNodeLabel(nodeResult, relationshipResult, RelationshipType.of("FOLLOW"))
@@ -25,11 +25,13 @@ class PandaLabelPropagationTest {
   def lpTest(): Unit = {
     val config: LabelPropagationStreamConfigImpl.Builder = new LabelPropagationStreamConfigImpl.Builder
 
-    config.concurrency(1).maxIterations(1).nodeWeightProperty(null).seedProperty(null)
+    config.concurrency(1).maxIterations(10).nodeWeightProperty(null).seedProperty(null).minCommunitySize(1)
 
     val propagation: Array[Long] = new LabelPropagation(hg, config.build(), DefaultPool.INSTANCE, ProgressTracker.NULL_TRACKER).compute().labels.toArray()
 
-    println(propagation.mkString)
+    for (cursor <- 0 until hg.idMap().nodeCount().toInt) {
+      println(nodeResult(cursor).values + ":" + propagation(cursor))
+    }
 
   }
 
