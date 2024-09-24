@@ -1,6 +1,6 @@
 package panda.algo.pathfinding
 
-import org.cai.algoconfig.path.PandaDijkstraSingleSourceShortestConfig
+import org.cai.algoconfig.path.{PandaDijkstraSingleSourceShortestConfig, PandaDijkstraSourceTargetShortestConfig}
 import org.cai.graph.{GraphConversion, LoadDataFromPandaDB}
 import org.grapheco.lynx.types.LynxValue
 import org.junit.jupiter.api.Test
@@ -13,6 +13,7 @@ import org.neo4j.gds.termination.TerminationFlag
 
 import java.util
 import java.util.Optional
+import scala.collection.mutable.ListBuffer
 
 /**
  * @author cai584770
@@ -22,7 +23,6 @@ import java.util.Optional
 class PandaDijkstraSTSPTest {
   private val dbPath = "/home/cjw/db/dstsp.db"
   private val (nodeResult, relationshipResult) = LoadDataFromPandaDB.getNodeAndRelationship(dbPath, "Location", "ROAD")
-
   private val hg = GraphConversion.convertWithNodeLabel(nodeResult, relationshipResult, RelationshipType.of("ROAD"))
 
   @Test
@@ -44,6 +44,25 @@ class PandaDijkstraSTSPTest {
 
   }
 
+  @Test
+  def stsp1Test: Unit = {
+    val results: util.Set[PathResult] = PandaDijkstraSourceTargetShortestConfig.dijkstraSourceTargetShortest(hg, 1L, 4L)
 
+    val resultListBuffer = ListBuffer[LynxValue]()
+    results.forEach { s =>
+      val ids = s.nodeIds()
+      val count = s.nodeIds().length
+      val pathResultListBuffer = ListBuffer[LynxValue]()
+      for (cursor <- 0 until count) {
+        val id: Long = ids(cursor)
+        pathResultListBuffer += LynxValue(nodeResult(id.toInt).values.toList)
+      }
+      resultListBuffer += LynxValue(pathResultListBuffer.toList)
+    }
+    LynxValue(resultListBuffer.toList)
+
+    println(LynxValue(resultListBuffer.toList))
+
+  }
 
 }

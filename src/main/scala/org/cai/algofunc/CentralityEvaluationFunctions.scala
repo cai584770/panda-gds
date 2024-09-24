@@ -5,6 +5,7 @@ import org.cai.graph.GraphConversion
 import org.grapheco.lynx.LynxRecord
 import org.grapheco.lynx.func.{LynxProcedure, LynxProcedureArgument}
 import org.grapheco.lynx.types.LynxValue
+import org.grapheco.lynx.types.composite.{LynxList, LynxMap}
 import org.grapheco.lynx.types.property.LynxString
 import org.grapheco.pandadb.PandaInstanceContext
 import org.grapheco.pandadb.facade.{GraphFacade, PandaTransaction}
@@ -36,6 +37,7 @@ class CentralityEvaluationFunctions extends TypeFunctions {
                @LynxProcedureArgument(name = "nodeLabel") nodeLabel: LynxString,
                @LynxProcedureArgument(name = "relationshipLabel") relationshipLabel: LynxString,
              ): LynxValue = {
+//    call louvain.compute("","") ->(["",""],[])
     val selectionStrategy: SelectionStrategy = new FullSelectionStrategy
     val traverserFactory: ForwardTraverser.Factory = ForwardTraverser.Factory.unweighted
     val executorService: ExecutorService = DefaultPool.INSTANCE
@@ -49,17 +51,18 @@ class CentralityEvaluationFunctions extends TypeFunctions {
     val relationshipsRecords = tx.executeQuery(relationshipsQuery).records().toList
 
     val hugeGraph = GraphConversion.convertWithId(nodeRecords, relationshipsRecords, RelationshipType.of(relationshipLabel.value))
-
     val betweennessCentralityResult: HugeAtomicDoubleArray = PandaBetweennessCentralityConfig.betweennessCentrality(hugeGraph, selectionStrategy, traverserFactory, executorService, concurrency, progressTracker)
-
-    val mapListBuffer = ListBuffer[Map[Any, Double]]()
-
     val count: Int = hugeGraph.idMap().nodeCount().toInt
+
+    val mapListBuffer = ListBuffer[Map[String, LynxValue]]()
     for (cursor <- 0 until count) {
-      mapListBuffer += Map(nodeRecords(cursor).values -> betweennessCentralityResult.get(cursor.toLong))
+      val map: Map[String, LynxValue] = Map(LynxValue(nodeRecords(cursor).values.toList).toString -> LynxValue(betweennessCentralityResult.get(cursor.toLong)))
+      mapListBuffer += map
     }
 
-    LynxValue(mapListBuffer.toList)
+
+    val mapList: List[Map[String, LynxValue]] = mapListBuffer.toList
+    LynxValue(mapList.map(LynxMap))
   }
 
   @LynxProcedure(name = "PageRank.compute")
@@ -82,17 +85,18 @@ class CentralityEvaluationFunctions extends TypeFunctions {
     val relationshipsRecords: immutable.Seq[LynxRecord] = tx.executeQuery(relationshipsQuery).records().toList
 
     val hugeGraph = GraphConversion.convertWithId(nodeRecords, relationshipsRecords, RelationshipType.of(relationshipLabel.value))
-
-    val pageRankResult: LongToDoubleFunction = PandaPageRankConfig.pageRank(hugeGraph, maxIterations, concurrency, tolerance, mode, progressTracker)
-
-    val mapListBuffer = ListBuffer[Map[Any, Double]]()
-
     val count: Int = hugeGraph.idMap().nodeCount().toInt
+
+    val pageRankResult: LongToDoubleFunction = PandaPageRankConfig.pageRank(hugeGraph, maxIterations, concurrency, tolerance,0.85, mode, progressTracker)
+
+    val mapListBuffer = ListBuffer[Map[String, LynxValue]]()
     for (cursor <- 0 until count) {
-      mapListBuffer += Map(nodeRecords(cursor).values -> pageRankResult.applyAsDouble(cursor.toLong))
+      val map: Map[String, LynxValue] = Map(LynxValue(nodeRecords(cursor).values.toList).toString -> LynxValue(pageRankResult.applyAsDouble(cursor.toLong)))
+      mapListBuffer += map
     }
 
-    LynxValue(mapListBuffer.toList)
+    val mapList: List[Map[String, LynxValue]] = mapListBuffer.toList
+    LynxValue(mapList.map(LynxMap))
   }
 
 

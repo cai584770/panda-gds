@@ -19,6 +19,7 @@ object PandaPageRankConfig {
                 maxIterations: Int = 20,
                 concurrency: Int = 1,
                 tolerance: Int = 0,
+                dampingFactorValue: Double = 0.85,
                 mode: Mode = Mode.PAGE_RANK,
                 progressTracker: ProgressTracker = ProgressTracker.NULL_TRACKER
               ): LongToDoubleFunction = {
@@ -27,7 +28,7 @@ object PandaPageRankConfig {
       .maxIterations(maxIterations)
       .concurrency(concurrency)
       .tolerance(tolerance)
-      .dampingFactor(0.85)
+      .dampingFactor(dampingFactorValue)
       .build
 
     new PageRankAlgorithmFactory(mode).build(hugeGraph, config, progressTracker).compute().centralityScoreProvider()

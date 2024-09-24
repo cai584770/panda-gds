@@ -1,6 +1,9 @@
 package panda.algo.community
 
+import org.cai.algoconfig.community.PandaWCCConfig
 import org.cai.graph.{GraphConversion, LoadDataFromPandaDB}
+import org.grapheco.lynx.types.LynxValue
+import org.grapheco.lynx.types.composite.LynxMap
 import org.junit.jupiter.api.Test
 import org.neo4j.gds.RelationshipType
 import org.neo4j.gds.core.CypherMapWrapper
@@ -9,6 +12,7 @@ import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker
 import org.neo4j.gds.wcc.{WccAlgorithmFactory, WccBaseConfig, WccMutateConfigImpl}
 
 import java.util.{Map => JMap}
+import scala.collection.mutable.ListBuffer
 
 /**
  * @author cai584770
@@ -16,14 +20,12 @@ import java.util.{Map => JMap}
  * @Version
  */
 class PandaWCCTest {
+  private val dbPath = "/home/cjw/db/wcc.db"
+  private val (nodeResult, relationshipResult) = LoadDataFromPandaDB.getNodeAndRelationship(dbPath, "User", "LINK")
+  private val hg = GraphConversion.convertWithId(nodeResult, relationshipResult, RelationshipType.of("LINK"))
 
   @Test
   def WccTest:Unit={
-    val dbPath = "/home/cjw/db/wcc.db"
-    val (nodeResult, relationshipResult) = LoadDataFromPandaDB.getNodeAndRelationship(dbPath, "User", "LINK")
-
-    val hg = GraphConversion.convertWithId(nodeResult, relationshipResult, RelationshipType.of("LINK"))
-
     val javaMap: JMap[String, Object] = JMap.of(
       "threshold", 3.14.asInstanceOf[AnyRef],
       "relationshipWeightProperty", "threshold",
@@ -50,7 +52,19 @@ class PandaWCCTest {
 
   @Test
   def testWithFunction: Unit = {
+    val longs: Array[Long] = PandaWCCConfig.wcc(hg)
 
+    val count: Int = hg.idMap().nodeCount().toInt
+
+    val mapListBuffer = ListBuffer[Map[String, LynxValue]]()
+    for (cursor <- 0 until count) {
+      val map: Map[String, LynxValue] = Map(LynxValue(nodeResult(cursor).values.toList).toString -> LynxValue(longs(cursor)))
+      mapListBuffer += map
+    }
+
+    val mapList: List[Map[String, LynxValue]] = mapListBuffer.toList
+    LynxValue(mapList.map(LynxMap))
+    println(LynxValue(mapList.map(LynxMap)))
   }
 
 }

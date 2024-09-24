@@ -4,6 +4,7 @@ import org.cai.algoconfig.centrality.PandaBetweennessCentralityConfig
 import org.cai.graph.{GraphConversion, LoadDataFromPandaDB}
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.composite.{LynxList, LynxMap}
+import org.grapheco.lynx.types.property.LynxNumber
 import org.grapheco.pandadb.graph.PandaNode
 import org.junit.jupiter.api.Test
 import org.neo4j.gds.RelationshipType
@@ -40,18 +41,19 @@ class PandaBetweennessCentralityTest {
   def PBCLynxValueTest(): Unit = {
     val bcResult: HugeAtomicDoubleArray = PandaBetweennessCentralityConfig.betweennessCentrality(hg)
 
-    val mapListBuffer = ListBuffer[Map[Any, Double]]()
-
     val count: Int = hg.idMap().nodeCount().toInt
+
+    val mapListBuffer = ListBuffer[Map[String, LynxValue]]()
+
     for (cursor <- 0 until count) {
-      mapListBuffer += Map(nodeResult(cursor).values->bcResult.get(cursor.toLong))
+      val map: Map[String, LynxValue] = Map(LynxValue(nodeResult(cursor).values.toList).toString -> LynxValue(bcResult.get(cursor.toLong)))
+      mapListBuffer += map
     }
 
-    println(mapListBuffer.toList)
+    val mapList: List[Map[String, LynxValue]] = mapListBuffer.toList
+    val lynxMapList: LynxValue = LynxValue(mapList.map(LynxMap))
 
-
-    val lynxValue: LynxValue = LynxValue.apply(mapListBuffer.toList)
-    println(lynxValue)
+    println(lynxMapList)
 
   }
 

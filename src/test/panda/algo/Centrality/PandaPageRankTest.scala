@@ -1,6 +1,9 @@
 package panda.algo.Centrality
 
+import org.cai.algoconfig.centrality.PandaPageRankConfig
 import org.cai.graph.{GraphConversion, LoadDataFromPandaDB}
+import org.grapheco.lynx.types.LynxValue
+import org.grapheco.lynx.types.composite.LynxMap
 import org.junit.jupiter.api.Test
 import org.neo4j.gds.RelationshipType
 import org.neo4j.gds.core.huge.HugeGraph
@@ -9,6 +12,7 @@ import org.neo4j.gds.pagerank.PageRankAlgorithmFactory.Mode
 import org.neo4j.gds.pagerank.{PageRankAlgorithmFactory, PageRankStreamConfig, PageRankStreamConfigImpl}
 
 import java.util.function.LongToDoubleFunction
+import scala.collection.mutable.ListBuffer
 
 /**
  * @author cai584770
@@ -16,7 +20,6 @@ import java.util.function.LongToDoubleFunction
  * @Version
  */
 class PandaPageRankTest {
-  private val SCORE_PRECISION = 1E-5
   private val dbPath = "/home/cjw/db/pr.db"
   private val (nodeResult, relationshipResult) = LoadDataFromPandaDB.getNodeAndRelationship(dbPath, "Page", "LINKS")
 
@@ -25,9 +28,7 @@ class PandaPageRankTest {
 
   @Test
   def pageRankTest(): Unit = {
-    val build: PageRankStreamConfig = PageRankStreamConfigImpl.builder.maxIterations(20).concurrency(1).tolerance(0).dampingFactor(0.85).build
-
-    val pageRankResult: LongToDoubleFunction = new PageRankAlgorithmFactory(Mode.PAGE_RANK).build(hg, build, ProgressTracker.NULL_TRACKER).compute().centralityScoreProvider()
+    val pageRankResult = PandaPageRankConfig.pageRank(hg)
 
     println(pageRankResult)
 
@@ -38,6 +39,25 @@ class PandaPageRankTest {
 
   }
 
+  @Test
+  def pageRankLynxTest(): Unit = {
+    val pageRankResult = PandaPageRankConfig.pageRank(hg)
+
+    val count: Int = hg.idMap().nodeCount().toInt
+
+    val mapListBuffer = ListBuffer[Map[String, LynxValue]]()
+    for (cursor <- 0 until count) {
+      val map: Map[String, LynxValue] = Map(LynxValue(nodeResult(cursor).values.toList).toString -> LynxValue(pageRankResult.applyAsDouble(cursor.toLong)))
+      mapListBuffer += map
+    }
+
+
+    val mapList: List[Map[String, LynxValue]] = mapListBuffer.toList
+    LynxValue(mapList.map(LynxMap))
+
+    println(LynxValue(mapList.map(LynxMap)))
+
+  }
 
 
 }

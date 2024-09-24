@@ -4,7 +4,7 @@ import org.cai.algoconfig.community.{PandaLabelPropagationConfig, PandaLouvainCo
 import org.cai.graph.GraphConversion
 import org.grapheco.lynx.func.{LynxProcedure, LynxProcedureArgument}
 import org.grapheco.lynx.types.LynxValue
-import org.grapheco.lynx.types.composite.LynxList
+import org.grapheco.lynx.types.composite.{LynxList, LynxMap}
 import org.grapheco.lynx.types.property.LynxString
 import org.grapheco.pandadb.PandaInstanceContext
 import org.grapheco.pandadb.facade.{GraphFacade, PandaTransaction}
@@ -18,6 +18,7 @@ import org.neo4j.gds.termination.TerminationFlag
 
 import java.util.concurrent.ExecutorService
 import java.util.{Map => JMap}
+import scala.collection.mutable.ListBuffer
 
 /**
  * @author cai584770
@@ -29,18 +30,10 @@ class CommunityDetectionFunctions extends TypeFunctions {
   private val embeddedDB: GraphFacade = PandaInstanceContext.getObject("embeddedDB").asInstanceOf[GraphFacade]
 
   @LynxProcedure(name = "Louvain.compute")
-  def computeLouvain(
+  def louvainCompute(
                       @LynxProcedureArgument(name = "nodeLabel") nodeLabel: LynxString,
                       @LynxProcedureArgument(name = "relationshipLabel") relationshipLabel: LynxString
                     ): LynxValue = {
-    val tolerance: Double = TOLERANCE_DEFAULT
-    val maxIterations: Int = 10
-    val includeIntermediateCommunities: Boolean = true
-    val concurrency: Int = 1
-    val progressTracker: ProgressTracker = ProgressTracker.NULL_TRACKER
-    val executorService: ExecutorService = DefaultPool.INSTANCE
-    val terminationFlag: TerminationFlag = TerminationFlag.RUNNING_TRUE
-
     val nodesQuery: String = s"match (n:${nodeLabel}) return n;"
     val relationshipsQuery: String = s"MATCH (n:${nodeLabel})-[r:${relationshipLabel}]->(m:${nodeLabel}) RETURN r;"
     val tx: PandaTransaction = embeddedDB.beginTransaction()
@@ -50,19 +43,18 @@ class CommunityDetectionFunctions extends TypeFunctions {
 
     val hugeGraph = GraphConversion.convertWithId(nodeRecords, relationshipsRecords, RelationshipType.of(relationshipLabel.value))
 
-    val (dendrogram, modularities): (Array[HugeLongArray], Array[Double]) = PandaLouvainConfig.louvain(hugeGraph, tolerance, maxIterations, includeIntermediateCommunities, concurrency, progressTracker, executorService, terminationFlag)
+    val (dendrogram, modularities) = PandaLouvainConfig.louvain(hugeGraph)
+    val count: Int = hugeGraph.idMap().nodeCount().toInt
+    val result = dendrogram(0).toArray
 
-    val modularitiesLynx: LynxValue = LynxValue.apply(modularities)
-
-    for (den: HugeLongArray <- dendrogram) {
-      val d: Array[Long] = den.toArray()
-      val v: LynxValue = LynxValue.apply(d)
+    val mapListBuffer = ListBuffer[Map[String, LynxValue]]()
+    for (cursor <- 0 until count) {
+      val map: Map[String, LynxValue] = Map(LynxValue(nodeRecords(cursor).values.toList).toString -> LynxValue(result(cursor)))
+      mapListBuffer += map
     }
 
-    tx.commit()
-    tx.close()
-
-    modularitiesLynx
+    val mapList: List[Map[String, LynxValue]] = mapListBuffer.toList
+    LynxValue(mapList.map(LynxMap))
   }
 
 
@@ -78,21 +70,25 @@ class CommunityDetectionFunctions extends TypeFunctions {
     val executorService: ExecutorService = DefaultPool.INSTANCE
     val progressTracker: ProgressTracker = ProgressTracker.NULL_TRACKER
 
-
     val nodesQuery: String = s"match (n:${nodeLabel}) return n;"
     val relationshipsQuery: String = s"MATCH (n:${nodeLabel})-[r:${relationshipLabel}]->(m:${nodeLabel}) RETURN r;"
     val tx: PandaTransaction = embeddedDB.beginTransaction()
 
     val nodeRecords = tx.executeQuery(nodesQuery).records().toList
     val relationshipsRecords = tx.executeQuery(relationshipsQuery).records().toList
-
     val hugeGraph = GraphConversion.convertWithId(nodeRecords, relationshipsRecords, RelationshipType.of(relationshipLabel.value))
+    val count: Int = hugeGraph.idMap().nodeCount().toInt
 
-    val pandaLabelPropagationResult: Array[Long] = PandaLabelPropagationConfig.labelPropagation(hugeGraph, concurrency, maxIterations, nodeWeightProperty, executorService, progressTracker)
+    val lpResult: Array[Long] = PandaLabelPropagationConfig.labelPropagation(hugeGraph, concurrency, maxIterations, nodeWeightProperty, executorService, progressTracker)
 
-    val lynxResult: LynxValue = LynxValue.apply(pandaLabelPropagationResult)
+    val mapListBuffer = ListBuffer[Map[String, LynxValue]]()
+    for (cursor <- 0 until count) {
+      val map: Map[String, LynxValue] = Map(LynxValue(nodeRecords(cursor).values.toList).toString -> LynxValue(lpResult(cursor)))
+      mapListBuffer += map
+    }
 
-    lynxResult
+    val mapList: List[Map[String, LynxValue]] = mapListBuffer.toList
+    LynxValue(mapList.map(LynxMap))
   }
 
 
@@ -101,14 +97,6 @@ class CommunityDetectionFunctions extends TypeFunctions {
                   @LynxProcedureArgument(name = "nodeLabel") nodeLabel: LynxString,
                   @LynxProcedureArgument(name = "relationshipLabel") relationshipLabel: LynxString,
                 ): LynxValue = {
-
-    val javaMap: JMap[String, Object] = JMap.of(
-      "threshold", 3.14.asInstanceOf[AnyRef],
-      "relationshipWeightProperty", "threshold",
-      "mutateProperty", "resultProperty"
-    )
-    val progressTracker: ProgressTracker = ProgressTracker.NULL_TRACKER
-
     val nodesQuery: String = s"match (n:${nodeLabel}) return n;"
     val relationshipsQuery: String = s"MATCH (n:${nodeLabel})-[r:${relationshipLabel}]->(m:${nodeLabel}) RETURN r;"
     val tx: PandaTransaction = embeddedDB.beginTransaction()
@@ -118,11 +106,18 @@ class CommunityDetectionFunctions extends TypeFunctions {
 
     val hugeGraph = GraphConversion.convertWithId(nodeRecords, relationshipsRecords, RelationshipType.of(relationshipLabel.value))
 
-    val pandaWCCResult: Array[Long] = PandaWCCConfig.wcc(hugeGraph, javaMap, progressTracker)
+    val longs: Array[Long] = PandaWCCConfig.wcc(hugeGraph)
 
-    val lynxResult: LynxValue = LynxValue.apply(pandaWCCResult)
+    val count: Int = hugeGraph.idMap().nodeCount().toInt
 
-    lynxResult
+    val mapListBuffer = ListBuffer[Map[String, LynxValue]]()
+    for (cursor <- 0 until count) {
+      val map: Map[String, LynxValue] = Map(LynxValue(nodeRecords(cursor).values.toList).toString -> LynxValue(longs(cursor)))
+      mapListBuffer += map
+    }
+
+    val mapList: List[Map[String, LynxValue]] = mapListBuffer.toList
+    LynxValue(mapList.map(LynxMap))
   }
 
   @LynxProcedure(name = "TriangleCount.compute")

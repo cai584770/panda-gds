@@ -1,6 +1,9 @@
 package panda.algo.community
 
+import org.cai.algoconfig.community.PandaLabelPropagationConfig
 import org.cai.graph.{GraphConversion, LoadDataFromPandaDB}
+import org.grapheco.lynx.types.LynxValue
+import org.grapheco.lynx.types.composite.LynxMap
 import org.grapheco.pandadb.graph.PandaNode
 import org.junit.jupiter.api.Test
 import org.neo4j.gds.RelationshipType
@@ -8,6 +11,8 @@ import org.neo4j.gds.api.IdMap
 import org.neo4j.gds.core.concurrency.DefaultPool
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker
 import org.neo4j.gds.labelpropagation.{LabelPropagation, LabelPropagationStreamConfigImpl}
+
+import scala.collection.mutable.ListBuffer
 
 /**
  * @author cai584770
@@ -70,6 +75,22 @@ class PandaLabelPropagationTest {
 
   }
 
+  @Test
+  def lp2Test(): Unit = {
+    val lpResult: Array[Long] = PandaLabelPropagationConfig.labelPropagation(hg)
+    val count: Int = hg.idMap().nodeCount().toInt
 
+    val mapListBuffer = ListBuffer[Map[String, LynxValue]]()
+    for (cursor <- 0 until count) {
+      val map: Map[String, LynxValue] = Map(LynxValue(nodeResult(cursor).values.toList).toString -> LynxValue(lpResult(cursor)))
+      mapListBuffer += map
+    }
+
+    val mapList: List[Map[String, LynxValue]] = mapListBuffer.toList
+    LynxValue(mapList.map(LynxMap))
+
+    println(LynxValue(mapList.map(LynxMap)))
+
+  }
 
 }

@@ -2,13 +2,17 @@ package panda.algo.community
 
 import org.cai.algoconfig.community.PandaLouvainConfig
 import org.cai.graph.{GraphConversion, LoadDataFromPandaDB}
+import org.grapheco.lynx.types.LynxValue
+import org.grapheco.lynx.types.composite.LynxMap
 import org.junit.jupiter.api.Test
 import org.neo4j.gds.RelationshipType
 import org.neo4j.gds.collections.ha.HugeLongArray
 import org.neo4j.gds.core.ProcedureConstants.TOLERANCE_DEFAULT
 import org.neo4j.gds.core.concurrency.DefaultPool
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker
-import org.neo4j.gds.termination.TerminationFlag;
+import org.neo4j.gds.termination.TerminationFlag
+
+import scala.collection.mutable.ListBuffer;
 
 /**
  * @author cai584770
@@ -16,14 +20,12 @@ import org.neo4j.gds.termination.TerminationFlag;
  * @Version
  */
 class PandaLouvainTest {
+  private val dbPath = "/home/cjw/db/louvain.db"
+  private val (nodeResult, relationshipResult) = LoadDataFromPandaDB.getNodeAndRelationship(dbPath, "User", "LINK")
+  private val hg = GraphConversion.convertWithId(nodeResult, relationshipResult, RelationshipType.of("LINK"))
 
   @Test
   def louvainTest(): Unit = {
-    val dbPath = "/home/cjw/db/louvain.db"
-    val (nodeResult, relationshipResult) = LoadDataFromPandaDB.getNodeAndRelationship(dbPath, "User", "LINK")
-
-    val hg = GraphConversion.convertWithId(nodeResult, relationshipResult, RelationshipType.of("LINK"))
-
     val (dendrogram,modularities) = PandaLouvainConfig.louvain(hg, TOLERANCE_DEFAULT, 10, includeIntermediateCommunities = true, 1, ProgressTracker.NULL_TRACKER, DefaultPool.INSTANCE, TerminationFlag.RUNNING_TRUE)
 
     val result = dendrogram(0).toArray
@@ -34,7 +36,25 @@ class PandaLouvainTest {
   }
 
 
+  @Test
+  def louvainConfigTest(): Unit = {
+    val (dendrogram, modularities) = PandaLouvainConfig.louvain(hg)
 
+    val count: Int = hg.idMap().nodeCount().toInt
+    val result = dendrogram(0).toArray
+
+    val mapListBuffer = ListBuffer[Map[String, LynxValue]]()
+    for (cursor <- 0 until count) {
+      val map: Map[String, LynxValue] = Map(LynxValue(nodeResult(cursor).values.toList).toString -> LynxValue(result(cursor)))
+      mapListBuffer += map
+    }
+
+    val mapList: List[Map[String, LynxValue]] = mapListBuffer.toList
+    LynxValue(mapList.map(LynxMap))
+
+    println(LynxValue(mapList.map(LynxMap)))
+
+  }
 
 
 

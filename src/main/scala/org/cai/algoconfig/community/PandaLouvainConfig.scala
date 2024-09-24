@@ -21,8 +21,8 @@ object PandaLouvainConfig {
                hugeGraph: HugeGraph,
                tolerance: Double = TOLERANCE_DEFAULT,
                maxIterations: Int = 10,
-               includeIntermediateCommunities: Boolean = true,
-               concurrency: Int = 1,
+               includeIntermediateCommunities: Boolean = false,
+               concurrency: Int = 4,
                progressTracker: ProgressTracker = ProgressTracker.NULL_TRACKER,
                executorService: ExecutorService = DefaultPool.INSTANCE,
                terminationFlag: TerminationFlag = TerminationFlag.RUNNING_TRUE

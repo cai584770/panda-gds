@@ -1,11 +1,17 @@
 package panda.algo.pathfinding
 
+import org.cai.algoconfig.path.PandaBFSConfig
 import org.cai.graph.{GraphConversion, LoadDataFromPandaDB}
+import org.grapheco.lynx.types.LynxValue
+import org.grapheco.lynx.types.composite.LynxMap
 import org.junit.jupiter.api.Test
 import org.neo4j.gds.RelationshipType
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker
 import org.neo4j.gds.paths.traverse.BFS
 import org.neo4j.gds.paths.traverse.ExitPredicate.Result
+
+import scala.collection.immutable
+import scala.collection.mutable.ListBuffer
 
 /**
  * @author cai584770
@@ -15,7 +21,6 @@ import org.neo4j.gds.paths.traverse.ExitPredicate.Result
 class PandaBFSTest{
   private val dbPath = "/home/cjw/db/bfs.db"
   private val (nodeResult, relationshipResult) = LoadDataFromPandaDB.getNodeAndRelationship(dbPath, "Node", "REL")
-
   private val hg = GraphConversion.convertWithNodeLabel(nodeResult, relationshipResult, RelationshipType.of("REL"))
 
 
@@ -41,6 +46,26 @@ class PandaBFSTest{
     }
 
     println(result.mkString("-"))
+
+  }
+
+  @Test
+  def BFS1Test(): Unit = {
+    val source: Long = hg.toMappedNodeId(1L)
+    val target: Long = hg.toMappedNodeId(4L)
+
+    val targetList = List(4L)
+    val result: Array[Long] = PandaBFSConfig.BFS(hg,source,targetList)
+    val count: Int = result.length
+
+    val mapListBuffer = ListBuffer[LynxValue]()
+    for (cursor <- 0 until count) {
+      mapListBuffer += LynxValue(nodeResult(cursor).values.toList)
+    }
+
+    val mapList: immutable.Seq[LynxValue] = mapListBuffer.toList
+    LynxValue(mapList)
+    println(LynxValue(mapList))
 
   }
 

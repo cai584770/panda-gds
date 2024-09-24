@@ -1,6 +1,8 @@
 package panda.algo.pathfinding
 
+import org.cai.algoconfig.path.PandaDFSConfig
 import org.cai.graph.{GraphConversion, LoadDataFromPandaDB}
+import org.grapheco.lynx.types.LynxValue
 import org.grapheco.pandadb.graph.PandaNode
 import org.junit.jupiter.api.Test
 import org.neo4j.gds.RelationshipType
@@ -9,6 +11,9 @@ import org.neo4j.gds.collections.ha.HugeLongArray
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker
 import org.neo4j.gds.paths.traverse.ExitPredicate.Result
 import org.neo4j.gds.paths.traverse.{Aggregator, BFS, DFS, DfsBaseConfig}
+
+import scala.collection.immutable
+import scala.collection.mutable.ListBuffer
 
 /**
  * @author cai584770
@@ -58,4 +63,30 @@ class PandaDFSTest {
     }
   }
 
+
+  @Test
+  def DFS1Test(): Unit = {
+    val l = hg.toMappedNodeId(1L)
+    val targetList = List(4L)
+
+    val result: Array[Long] = PandaDFSConfig.DFS(hg,l,targetList)
+
+    val count: Int = result.length
+    for (cursor <- 0 until count) {
+      println(nodeResult(result(cursor).toInt).values + ":" + result(cursor))
+    }
+
+    println(result.mkString("-"))
+
+    val mapListBuffer = ListBuffer[LynxValue]()
+    for (cursor <- 0 until count) {
+      mapListBuffer += LynxValue(nodeResult(cursor).values.toList)
+    }
+
+    val mapList: immutable.Seq[LynxValue] = mapListBuffer.toList
+    println(LynxValue(mapList))
+
+
+
+  }
 }

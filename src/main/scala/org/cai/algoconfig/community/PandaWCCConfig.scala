@@ -15,7 +15,11 @@ import java.util.{Map => JMap}
 object PandaWCCConfig {
 
   def wcc(hugeGraph: HugeGraph,
-          javaMap: JMap[String, Object],
+          javaMap: JMap[String, Object] = JMap.of(
+            "threshold", 3.14.asInstanceOf[AnyRef],
+            "relationshipWeightProperty", "threshold",
+            "mutateProperty", "resultProperty"
+          ),
           progressTracker: ProgressTracker = ProgressTracker.NULL_TRACKER
          ):Array[Long]={
 

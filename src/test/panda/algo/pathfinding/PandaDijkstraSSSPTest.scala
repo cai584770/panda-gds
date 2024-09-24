@@ -13,6 +13,7 @@ import org.neo4j.gds.termination.TerminationFlag
 
 import java.util
 import java.util.Optional
+import scala.collection.mutable.ListBuffer
 
 /**
  * @author cai584770
@@ -70,4 +71,25 @@ class PandaDijkstraSSSPTest {
 
   }
 
+
+  @Test
+  def sssp2Test: Unit = {
+    val results: util.Set[PathResult] = PandaDijkstraSingleSourceShortestConfig.dijkstraSingleSourceShortest(hg, hg.toOriginalNodeId(0L))
+
+    val resultListBuffer = ListBuffer[LynxValue]()
+    results.forEach { s =>
+      val ids = s.nodeIds()
+      val count = s.nodeIds().length
+      val pathResultListBuffer = ListBuffer[LynxValue]()
+      for (cursor <- 0 until count) {
+        val id: Long = ids(cursor)
+        pathResultListBuffer += LynxValue(nodeResult(id.toInt).values.toList)
+      }
+      resultListBuffer += LynxValue(pathResultListBuffer.toList)
+    }
+    LynxValue(resultListBuffer.toList)
+
+    println(LynxValue(resultListBuffer.toList))
+
+  }
 }

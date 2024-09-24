@@ -2,10 +2,12 @@ package org.cai.algofunc
 
 import org.cai.algoconfig.path.{PandaBFSConfig, PandaDFSConfig, PandaDijkstraSingleSourceShortestConfig, PandaDijkstraSourceTargetShortestConfig}
 import org.cai.graph.GraphConversion
+import org.grapheco.lynx.LynxRecord
 import org.grapheco.lynx.func.{LynxProcedure, LynxProcedureArgument}
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.composite.LynxList
 import org.grapheco.lynx.types.property.{LynxInteger, LynxString}
+import org.grapheco.lynx.types.structural.{LynxNode, LynxPath}
 import org.grapheco.pandadb.PandaInstanceContext
 import org.grapheco.pandadb.facade.{GraphFacade, PandaTransaction}
 import org.grapheco.pandadb.plugin.typesystem.TypeFunctions
@@ -19,6 +21,8 @@ import org.neo4j.gds.termination.TerminationFlag
 import java.util
 import java.util.Optional
 import scala.collection.JavaConverters.seqAsJavaListConverter
+import scala.collection.immutable
+import scala.collection.mutable.ListBuffer
 
 
 /**
@@ -37,39 +41,25 @@ class PathSearchFunctions extends TypeFunctions {
                   source: LynxInteger,
                   targets: LynxList
                 ): LynxValue = {
-    val aggregatorFunction: Aggregator = Aggregator.NO_AGGREGATION
-    val concurrency: Int = 1
-    val maxDepth: Long = DfsBaseConfig.NO_MAX_DEPTH
-    val progressTracker: ProgressTracker = ProgressTracker.NULL_TRACKER
-
     val nodesQuery: String = s"match (n:${nodeLabel}) return n;"
     val relationshipsQuery: String = s"MATCH (n:${nodeLabel})-[r:${relationshipLabel}]->(m:${nodeLabel}) RETURN r;"
     val tx: PandaTransaction = embeddedDB.beginTransaction()
 
     val nodeRecords = tx.executeQuery(nodesQuery).records().toList
     val relationshipsRecords = tx.executeQuery(relationshipsQuery).records().toList
-
     val hugeGraph = GraphConversion.convertWithId(nodeRecords, relationshipsRecords, RelationshipType.of(relationshipLabel.value))
+    val target: List[Long] = targets.value.map(l => l.value.asInstanceOf[Long])
 
-    val target: List[LynxValue]  = targets.value
+    val BFSResult: Array[Long] = PandaBFSConfig.BFS(hugeGraph, source.value,target)
 
-    val javaLongList: List[java.lang.Long] = target.collect {
-      case lynxValue if lynxValue.value.isInstanceOf[Long] =>
-        java.lang.Long.valueOf(lynxValue.value.asInstanceOf[Long])
+    val count: Int = BFSResult.length
+    val mapListBuffer = ListBuffer[LynxValue]()
+    for (cursor <- 0 until count) {
+      mapListBuffer += LynxValue(nodeRecords(cursor).values.toList)
     }
 
-    val exitPredicate: ExitPredicate = new TargetExitPredicate(javaLongList.asJava)
-
-    val BFSResult: Array[Long] = PandaBFSConfig.BFS(hugeGraph, source.value,
-      exitPredicate,
-      aggregatorFunction,
-      concurrency,
-      progressTracker,
-      maxDepth)
-
-    val lynxResult: LynxValue = LynxValue.apply(BFSResult)
-
-    lynxResult
+    val mapList: immutable.Seq[LynxValue] = mapListBuffer.toList
+    LynxValue(mapList)
 
   }
 
@@ -80,110 +70,110 @@ class PathSearchFunctions extends TypeFunctions {
                   source: LynxInteger,
                   targets: LynxList
                 ): LynxValue = {
-
-    val aggregatorFunction: Aggregator = Aggregator.NO_AGGREGATION
-    val maxDepth: Long = DfsBaseConfig.NO_MAX_DEPTH
-    val progressTracker: ProgressTracker = ProgressTracker.NULL_TRACKER
-
     val nodesQuery: String = s"match (n:${nodeLabel}) return n;"
     val relationshipsQuery: String = s"MATCH (n:${nodeLabel})-[r:${relationshipLabel}]->(m:${nodeLabel}) RETURN r;"
     val tx: PandaTransaction = embeddedDB.beginTransaction()
 
     val nodeRecords = tx.executeQuery(nodesQuery).records().toList
     val relationshipsRecords = tx.executeQuery(relationshipsQuery).records().toList
-
     val hugeGraph = GraphConversion.convertWithId(nodeRecords, relationshipsRecords, RelationshipType.of(relationshipLabel.value))
 
+    val target: List[Long] = targets.value.map(l => l.value.asInstanceOf[Long])
+    val DFSResult: Array[Long] = PandaDFSConfig.DFS(hugeGraph, source.value, target)
 
-    val target: List[LynxValue] = targets.value
-
-    val javaLongList: List[java.lang.Long] = target.collect {
-      case lynxValue if lynxValue.value.isInstanceOf[Long] =>
-        java.lang.Long.valueOf(lynxValue.value.asInstanceOf[Long])
+    val count: Int = DFSResult.length
+    val mapListBuffer = ListBuffer[LynxValue]()
+    for (cursor <- 0 until count) {
+      mapListBuffer += LynxValue(nodeRecords(cursor).values.toList)
     }
 
-    val exitPredicate: ExitPredicate = new TargetExitPredicate(javaLongList.asJava)
-
-    val DFSResult: Array[Long] = PandaDFSConfig.DFS(hugeGraph, source.value, exitPredicate, aggregatorFunction, maxDepth, progressTracker)
-
-    val lynxResult: LynxValue = LynxValue.apply(DFSResult)
-
-    lynxResult
+    val mapList: immutable.Seq[LynxValue] = mapListBuffer.toList
+    LynxValue(mapList)
   }
 
-  @LynxProcedure(name = "Dijkstra.ss")
-  def ss(
+  @LynxProcedure(name = "Dijkstra.sssp")
+  def dijkstraSSSP(
           @LynxProcedureArgument(name = "nodeLabel") nodeLabel: LynxString,
           @LynxProcedureArgument(name = "relationshipLabel") relationshipLabel: LynxString,
-          source: LynxInteger
+          @LynxProcedureArgument(name = "sourceID") source: LynxInteger
         ): LynxValue = {
-
-    val concurrency: Int = 1
-    val trackRelationships: Boolean = false
-    val heuristicFunction: Optional[Dijkstra.HeuristicFunction] = Optional.empty[Dijkstra.HeuristicFunction]
-    val progressTracker: ProgressTracker = ProgressTracker.NULL_TRACKER
-    val terminationFlag: TerminationFlag = TerminationFlag.RUNNING_TRUE
-
     val nodesQuery: String = s"match (n:${nodeLabel}) return n;"
     val relationshipsQuery: String = s"MATCH (n:${nodeLabel})-[r:${relationshipLabel}]->(m:${nodeLabel}) RETURN r;"
     val tx: PandaTransaction = embeddedDB.beginTransaction()
 
     val nodeRecords = tx.executeQuery(nodesQuery).records().toList
     val relationshipsRecords = tx.executeQuery(relationshipsQuery).records().toList
-
     val hugeGraph = GraphConversion.convertWithId(nodeRecords, relationshipsRecords, RelationshipType.of(relationshipLabel.value))
+    val dijkstraSingleSourceShortestResult: util.Set[PathResult] = PandaDijkstraSingleSourceShortestConfig.dijkstraSingleSourceShortest(hugeGraph, source.value)
 
-    val dijkstraSingleSourceShortestResult: util.Set[PathResult] = PandaDijkstraSingleSourceShortestConfig.dijkstraSingleSourceShortest(hugeGraph, source.value, concurrency, trackRelationships, heuristicFunction, progressTracker, terminationFlag)
-
-    var idsResult: Array[Array[Long]] = Array.empty[Array[Long]]
-
-    val iterator = dijkstraSingleSourceShortestResult.iterator
-    while (iterator.hasNext) {
-      val dijkstraResult = iterator.next()
-      idsResult = idsResult :+ dijkstraResult.nodeIds()
+    val resultListBuffer = ListBuffer[LynxValue]()
+    dijkstraSingleSourceShortestResult.forEach { s =>
+      val ids = s.nodeIds()
+      val count = s.nodeIds().length
+      val pathResultListBuffer = ListBuffer[LynxValue]()
+      for (cursor <- 0 until count) {
+        val id: Long = ids(cursor)
+        pathResultListBuffer += LynxValue(nodeRecords(id.toInt).values.toList)
+      }
+      resultListBuffer += LynxValue(pathResultListBuffer.toList)
     }
 
-    val result: LynxValue = LynxValue.apply(idsResult)
-
-    result
+    LynxValue(resultListBuffer.toList)
   }
 
-  @LynxProcedure(name = "Dijkstra.st")
-  def st(
+  @LynxProcedure(name = "Dijkstra.stsp")
+  def dijkstraSTSP(
           @LynxProcedureArgument(name = "nodeLabel") nodeLabel: LynxString,
           @LynxProcedureArgument(name = "relationshipLabel") relationshipLabel: LynxString,
           source: LynxInteger,
           target: LynxInteger
         ): LynxValue = {
-    val concurrency: Int = 1
-    val trackRelationships: Boolean = false
-    val heuristicFunction: Optional[Dijkstra.HeuristicFunction] = Optional.empty[Dijkstra.HeuristicFunction]
-    val progressTracker: ProgressTracker = ProgressTracker.NULL_TRACKER
-    val terminationFlag: TerminationFlag = TerminationFlag.RUNNING_TRUE
-
     val nodesQuery: String = s"match (n:${nodeLabel}) return n;"
     val relationshipsQuery: String = s"MATCH (n:${nodeLabel})-[r:${relationshipLabel}]->(m:${nodeLabel}) RETURN r;"
     val tx: PandaTransaction = embeddedDB.beginTransaction()
 
     val nodeRecords = tx.executeQuery(nodesQuery).records().toList
     val relationshipsRecords = tx.executeQuery(relationshipsQuery).records().toList
-
     val hugeGraph = GraphConversion.convertWithId(nodeRecords, relationshipsRecords, RelationshipType.of(relationshipLabel.value))
 
-    val dijkstraSourceTargetShortestResult: util.Set[PathResult] = PandaDijkstraSourceTargetShortestConfig.dijkstraSourceTargetShortest(hugeGraph, source.value, target.value, concurrency, trackRelationships, heuristicFunction, progressTracker, terminationFlag)
+    val dijkstraSourceTargetShortestResult: util.Set[PathResult] = PandaDijkstraSourceTargetShortestConfig.dijkstraSourceTargetShortest(hugeGraph, source.value, target.value)
 
-    var idsResult: Array[Array[Long]] = Array.empty[Array[Long]]
-
-    val iterator = dijkstraSourceTargetShortestResult.iterator
-    while (iterator.hasNext) {
-      val dijkstraResult = iterator.next()
-      idsResult = idsResult :+ dijkstraResult.nodeIds()
+    val resultListBuffer = ListBuffer[LynxValue]()
+    dijkstraSourceTargetShortestResult.forEach { s =>
+      val ids = s.nodeIds()
+      val count = s.nodeIds().length
+      val pathResultListBuffer = ListBuffer[LynxValue]()
+      for (cursor <- 0 until count) {
+        val id: Long = ids(cursor)
+        pathResultListBuffer += LynxValue(nodeRecords(id.toInt).values.toList)
+      }
+      resultListBuffer += LynxValue(pathResultListBuffer.toList)
     }
-
-    val result: LynxValue = LynxValue.apply(idsResult)
-
-    result
+    LynxValue(resultListBuffer.toList)
   }
+
+  @LynxProcedure(name = "path.shortest")
+  def shortestPath(
+          @LynxProcedureArgument(name = "sLimit") s: LynxInteger,
+          @LynxProcedureArgument(name = "eLimit") e: LynxInteger,
+          @LynxProcedureArgument(name = "sourceNodeID") source: LynxInteger,
+          @LynxProcedureArgument(name = "targetNodeID") target: LynxInteger
+        ): LynxValue = {
+    val tx: PandaTransaction = embeddedDB.beginTransaction()
+
+    val query: String =
+      s"""
+         |match p = (m)
+         |-[$s..$e]-(n) where id(m)=$source and id(n)=$target return p
+         |""".stripMargin
+    val nodeRecords: Iterator[LynxRecord] = tx.executeQuery(query).records()
+    val r: List[LynxPath] = nodeRecords.map(x => x.values).map(x => x.asInstanceOf[LynxPath]).toList
+    val n: List[List[LynxNode]] = r.map(x => x.nodes)
+    val shortestList: List[LynxNode] = n.minBy(_.length)
+
+    LynxValue(shortestList)
+  }
+
 
 }
 

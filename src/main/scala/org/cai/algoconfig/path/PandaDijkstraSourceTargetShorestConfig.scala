@@ -21,7 +21,7 @@ object PandaDijkstraSourceTargetShortestConfig {
         hugeGraph: HugeGraph,
         source: Long,
         target: Long,
-        concurrency: Int = 1,
+        concurrency: Int = 4,
         trackRelationships: Boolean = false,
         heuristicFunction: Optional[Dijkstra.HeuristicFunction] = Optional.empty[Dijkstra.HeuristicFunction],
         progressTracker: ProgressTracker = ProgressTracker.NULL_TRACKER,
