@@ -3,6 +3,10 @@ package panda.algo.community
 import org.cai.algoconfig.community.PandaTriangleCountConfig
 import org.cai.graph.{GraphConversion, LoadDataFromPandaDB}
 import org.grapheco.lynx.LynxRecord
+import org.grapheco.lynx.types.LynxValue
+import org.grapheco.lynx.types.composite.{LynxList, LynxMap}
+import org.grapheco.lynx.types.property.LynxInteger
+import org.grapheco.lynx.types.structural.LynxNode
 import org.junit.jupiter.api.Test
 import org.neo4j.gds.RelationshipType
 import org.neo4j.gds.algorithms.community.CommunityAlgorithmsFacade
@@ -15,8 +19,10 @@ import org.neo4j.gds.core.huge.HugeGraph
 import org.neo4j.gds.core.utils.progress.tasks.{ProgressTracker, Task}
 import org.neo4j.gds.triangle.{IntersectingTriangleCount, IntersectingTriangleCountFactory, TriangleCountBaseConfigImpl, TriangleCountResult, TriangleCountStreamConfig, TriangleStream}
 
+import java.util
 import java.util.{Map => JMap}
 import scala.collection.immutable
+import scala.collection.mutable.ListBuffer
 
 /**
  * @author cai584770
@@ -100,19 +106,72 @@ class PandaTriangleCountingTest {
     val (global, local) = PandaTriangleCountConfig.triangleCountStats(hugeGraph)
     val lists = PandaTriangleCountConfig.triangleCountStream(hugeGraph)
     val nodecount = idMap.nodeCount().toInt
+//    println("----------------- global -----------------")
+//    println(s"globalTriangleCount: $global, nodeCount: ${idMap.nodeCount()}")
+//    val map: LynxMap = LynxMap.apply(Map("GlobalTriangleCount" -> LynxInteger.apply(global), "NodeCount" -> LynxInteger.apply(idMap.nodeCount())))
+//    println(map)
+//
+//    println("----------------- local -----------------")
+//    val lovalResult = ListBuffer[LynxInteger]()
+//    val nodeList = ListBuffer[LynxValue]()
+//    for (cursor <- 0 until nodecount) {
+////      println(nodeIdMap.getOrElse(cursor, -1) + ":" + nodeResult(cursor) +":" + local.get(cursor))
+////val values: Seq[LynxValue] = nodeResult(cursor).values
+//      lovalResult += LynxInteger.apply(local.get(cursor))
+//      val value: LynxValue = LynxValue(nodeResult(cursor).values.toList)
+//      nodeList += value
+//    }
+////    val list1: immutable.Seq[List[LynxValue]] = nodeList.toList
+////    LynxList.apply(list1)
+//
+//    println(LynxList.apply(lovalResult.toList))
+//    println(LynxMap(Map("TriangleCountNodeList" -> LynxList.apply(nodeList.toList))))
+//    println(LynxMap(Map("LocalTriangleCount" -> LynxList.apply(lovalResult.toList))))
+//
+//    println(LynxList.apply(List(LynxMap(Map("TriangleCountNodeList" -> LynxList.apply(nodeList.toList))),LynxMap(Map("LocalTriangleCount" -> LynxList.apply(lovalResult.toList))))))
+
+
+    println("----------------- stream -----------------")
+    val streamResultLynxList = ListBuffer[LynxList]()
+    for (list <- lists) {
+
+      streamResultLynxList += LynxList.apply(List(LynxInteger.apply(nodeIdMap.getOrElse(list(0).toInt, -1)), LynxInteger.apply(nodeIdMap.getOrElse(list(1).toInt, -1)), LynxInteger.apply(nodeIdMap.getOrElse(list(2).toInt, -1))))
+
+    }
+
+    println(LynxList.apply(streamResultLynxList.toList))
+
+  }
+
+  @Test
+  def testEncapsulation: Unit = {
+    val dbPath = "/home/cjw/db/tc.db"
+    val (nodeResult, relationshipResult) = LoadDataFromPandaDB.getNodeAndRelationship(dbPath, "Person", "KNOWS")
+
+    val (idMap, nodeIdMap, nodeIdInverseMap) = GraphConversion.getIdMap(nodeResult)
+
+    val hugeGraph = GraphConversion.createHugeGraph(relationshipResult, idMap, nodeIdInverseMap, "KNOWS")
+
+    val (global, local) = PandaTriangleCountConfig.triangleCountStats(hugeGraph)
+    val lists = PandaTriangleCountConfig.triangleCountStream(hugeGraph)
+    val nodecount = idMap.nodeCount().toInt
     println("----------------- global -----------------")
     println(s"globalTriangleCount: $global, nodeCount: ${idMap.nodeCount()}")
 
     println("----------------- local -----------------")
 
     for (cursor <- 0 until nodecount) {
-      println(nodeIdMap.getOrElse(cursor, -1) + ":" + nodeResult(cursor) +":" + local.get(cursor))
+      println(nodeIdMap.getOrElse(cursor, -1) + ":" + nodeResult(cursor) + ":" + local.get(cursor))
     }
 
     println("----------------- stream -----------------")
-    for (list <- lists){
+    for(list <- lists){
       println(list.mkString(" "))
     }
 
+
+
   }
+
+
 }

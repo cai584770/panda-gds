@@ -43,8 +43,7 @@ object PandaTriangleCountConfig {
     for (result <- streamResults) {
       result match {
         case re: TriangleStream.Result =>
-          val tempList = List(re.nodeA, re.nodeB, re.nodeC)
-          resultList += tempList
+          resultList += List(re.nodeA, re.nodeB, re.nodeC)
         case _ =>
           println("Unknown type")
       }
