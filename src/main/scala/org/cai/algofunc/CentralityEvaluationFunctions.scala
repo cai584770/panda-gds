@@ -37,7 +37,6 @@ class CentralityEvaluationFunctions extends TypeFunctions {
                @LynxProcedureArgument(name = "nodeLabel") nodeLabel: LynxString,
                @LynxProcedureArgument(name = "relationshipLabel") relationshipLabel: LynxString,
              ): LynxValue = {
-//    call louvain.compute("","") ->(["",""],[])
     val selectionStrategy: SelectionStrategy = new FullSelectionStrategy
     val traverserFactory: ForwardTraverser.Factory = ForwardTraverser.Factory.unweighted
     val executorService: ExecutorService = DefaultPool.INSTANCE
@@ -48,7 +47,7 @@ class CentralityEvaluationFunctions extends TypeFunctions {
     val tx: PandaTransaction = embeddedDB.beginTransaction()
 
     val nodeRecords: immutable.Seq[LynxRecord] = tx.executeQuery(nodesQuery).records().toList
-    val relationshipsRecords = tx.executeQuery(relationshipsQuery).records().toList
+    val relationshipsRecords: immutable.Seq[LynxRecord] = tx.executeQuery(relationshipsQuery).records().toList
 
     val hugeGraph = GraphConversion.convertWithId(nodeRecords, relationshipsRecords, RelationshipType.of(relationshipLabel.value))
     val betweennessCentralityResult: HugeAtomicDoubleArray = PandaBetweennessCentralityConfig.betweennessCentrality(hugeGraph, selectionStrategy, traverserFactory, executorService, concurrency, progressTracker)

@@ -120,31 +120,31 @@ class CommunityDetectionFunctions extends TypeFunctions {
     LynxValue(mapList.map(LynxMap))
   }
 
-  @LynxProcedure(name = "TriangleCount.compute")
-  def computeTriangleCount(
-                            @LynxProcedureArgument(name = "nodeLabel") nodeLabel: LynxString,
-                            @LynxProcedureArgument(name = "relationshipLabel") relationshipLabel: LynxString,
-                          ): LynxValue = {
-
-    val javaMap: JMap[String, Object] = null
-    val executorService: ExecutorService = DefaultPool.INSTANCE
-    val progressTracker: ProgressTracker = ProgressTracker.NULL_TRACKER
-
-    val nodesQuery: String = s"match (n:${nodeLabel}) return n;"
-    val relationshipsQuery: String = s"MATCH (n:${nodeLabel})-[r:${relationshipLabel}]->(m:${nodeLabel}) RETURN r;"
-    val tx: PandaTransaction = embeddedDB.beginTransaction()
-
-    val nodeRecords = tx.executeQuery(nodesQuery).records().toList
-    val relationshipsRecords = tx.executeQuery(relationshipsQuery).records().toList
-
-    val hugeGraph = GraphConversion.convertWithId(nodeRecords, relationshipsRecords, RelationshipType.of(relationshipLabel.value))
-
-    val pandaLabelPropagationResult: Long = PandaTriangleCountConfig.triangleCount(hugeGraph, javaMap, progressTracker, executorService)
-
-    val lynxResult: LynxValue = LynxValue.apply(pandaLabelPropagationResult)
-
-    lynxResult
-  }
+//  @LynxProcedure(name = "TriangleCount.compute")
+//  def computeTriangleCount(
+//                            @LynxProcedureArgument(name = "nodeLabel") nodeLabel: LynxString,
+//                            @LynxProcedureArgument(name = "relationshipLabel") relationshipLabel: LynxString,
+//                          ): LynxValue = {
+//
+//    val javaMap: JMap[String, Object] = null
+//    val executorService: ExecutorService = DefaultPool.INSTANCE
+//    val progressTracker: ProgressTracker = ProgressTracker.NULL_TRACKER
+//
+//    val nodesQuery: String = s"match (n:${nodeLabel}) return n;"
+//    val relationshipsQuery: String = s"MATCH (n:${nodeLabel})-[r:${relationshipLabel}]->(m:${nodeLabel}) RETURN r;"
+//    val tx: PandaTransaction = embeddedDB.beginTransaction()
+//
+//    val nodeRecords = tx.executeQuery(nodesQuery).records().toList
+//    val relationshipsRecords = tx.executeQuery(relationshipsQuery).records().toList
+//
+//    val hugeGraph = GraphConversion.convertWithId(nodeRecords, relationshipsRecords, RelationshipType.of(relationshipLabel.value))
+//
+//    val pandaLabelPropagationResult: Long = PandaTriangleCountConfig.triangleCount(hugeGraph, javaMap, progressTracker, executorService)
+//
+//    val lynxResult: LynxValue = LynxValue.apply(pandaLabelPropagationResult)
+//
+//    lynxResult
+//  }
 
 }
 

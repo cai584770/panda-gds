@@ -13,6 +13,5 @@ class CentralityEvaluationPlugin extends ExtensionTypePlugin {
     registerFunction(classOf[CentralityEvaluationFunctions])
   }
 
-
   override def getName: String = "CentralityEvaluationPlugin"
 }

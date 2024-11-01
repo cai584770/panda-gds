@@ -29,8 +29,6 @@ import java.util.stream.StreamSupport;
  * @Version
  */
 public class HugeGraphCreateTest {
-
-
     public static void main(String[] args) {
         try (Session session = ConnectConfig.driver.session()) {
 

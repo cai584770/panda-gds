@@ -12,7 +12,7 @@ class ControlsTest {
 
   @Test
   def deleteAll(): Unit = {
-    val path = "/home/cjw/tc.db"
+    val path = "/home/cjw/db/tc.db"
     val db = GraphDataBaseBuilder.newEmbeddedDatabase(path)
     val tx = db.beginTransaction()
     tx.executeQuery("MATCH ()-[r]->() DELETE r")
@@ -96,7 +96,7 @@ class ControlsTest {
 
   @Test
   def getNodes(): Unit = {
-    val path = "/home/cjw/ldbc100t.db"
+    val path = "/home/cjw/tc.db"
     val db = GraphDataBaseBuilder.newEmbeddedDatabase(path)
     val tx = db.beginTransaction()
     println("NodeCount:")
@@ -109,7 +109,7 @@ class ControlsTest {
 
   @Test
   def getAllNodesAndRelationships(): Unit = {
-    val path = "/home/cjw/tc.db"
+    val path = "/home/cjw/db/tc.db"
     val db = GraphDataBaseBuilder.newEmbeddedDatabase(path)
     val tx = db.beginTransaction()
     val result = tx.executeQuery("MATCH (n)-[r]->(m) RETURN n, r, m;")

@@ -24,10 +24,8 @@ import java.util.*;
 public class GDSGraphTest {
 
     public static void main(String[] args) {
-        // Neo4j connection setup
         try (Session session = ConnectConfig.driver.session()) {
 
-            // Import nodes from Neo4j
             List<Relationship> neo4jEdges = new ArrayList<>();
             Map<Long, Node> nodes = new HashMap<>();
 

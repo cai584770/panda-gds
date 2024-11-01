@@ -123,15 +123,22 @@ class CreateCommunityDetectionDB {
         |  (chris:Person {name: 'Chris'}),
         |  (will:Person {name: 'Will'}),
         |  (mark:Person {name: 'Mark'}),
-        |
         |  (michael)-[:KNOWS]->(karin),
+        |  (karin)-[:KNOWS]->(michael),
         |  (michael)-[:KNOWS]->(chris),
+        |  (chris)-[:KNOWS]->(michael),
         |  (will)-[:KNOWS]->(michael),
+        |  (michael)-[:KNOWS]->(will),
         |  (mark)-[:KNOWS]->(michael),
+        |  (michael)-[:KNOWS]->(mark),
         |  (mark)-[:KNOWS]->(will),
+        |  (will)-[:KNOWS]->(mark),
         |  (alice)-[:KNOWS]->(michael),
+        |  (michael)-[:KNOWS]->(alice),
         |  (will)-[:KNOWS]->(chris),
-        |  (chris)-[:KNOWS]->(karin)
+        |  (chris)-[:KNOWS]->(will),
+        |  (chris)-[:KNOWS]->(karin),
+        |  (karin)-[:KNOWS]->(chris)
         |""".stripMargin
     )
     val result = tx.executeQuery("MATCH (n)-[r]->(m) RETURN n, r, m;")

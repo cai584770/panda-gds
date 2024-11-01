@@ -12,15 +12,9 @@ import org.grapheco.pandadb.PandaInstanceContext
 import org.grapheco.pandadb.facade.{GraphFacade, PandaTransaction}
 import org.grapheco.pandadb.plugin.typesystem.TypeFunctions
 import org.neo4j.gds.RelationshipType
-import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker
 import org.neo4j.gds.paths.PathResult
-import org.neo4j.gds.paths.dijkstra.Dijkstra
-import org.neo4j.gds.paths.traverse.{Aggregator, DfsBaseConfig, ExitPredicate, TargetExitPredicate}
-import org.neo4j.gds.termination.TerminationFlag
 
 import java.util
-import java.util.Optional
-import scala.collection.JavaConverters.seqAsJavaListConverter
 import scala.collection.immutable
 import scala.collection.mutable.ListBuffer
 
