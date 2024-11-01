@@ -27,6 +27,26 @@ class PandaLabelPropagationTest {
   private val hg = GraphConversion.convertWithNodeLabel(nodeResult, relationshipResult, RelationshipType.of("FOLLOW"))
 
   @Test
+  def lpTestFunc():Unit={
+    val (idMap, nodeIdMap, nodeIdInverseMap) = GraphConversion.getIdMap(nodeResult)
+    val hugeGraph = GraphConversion.createHugeGraph(relationshipResult, idMap, nodeIdInverseMap, "FOLLOW")
+
+    val count: Int = hugeGraph.idMap().nodeCount().toInt
+    val lpResult: Array[Long] = PandaLabelPropagationConfig.labelPropagation(hugeGraph)
+
+    val mapListBuffer = ListBuffer[Map[String, LynxValue]]()
+    for (cursor <- 0 until count) {
+      val map: Map[String, LynxValue] = Map(LynxValue(nodeIdMap.getOrElse(cursor, -1)).toString -> LynxValue(lpResult(cursor)))
+      mapListBuffer += map
+    }
+
+    val mapList: List[Map[String, LynxValue]] = mapListBuffer.toList
+    println(LynxValue(mapList.map(LynxMap)))
+    nodeResult.foreach(println)
+  }
+
+
+  @Test
   def lpTest(): Unit = {
     val config: LabelPropagationStreamConfigImpl.Builder = new LabelPropagationStreamConfigImpl.Builder
 
@@ -36,6 +56,7 @@ class PandaLabelPropagationTest {
 
     for (cursor <- 0 until hg.idMap().nodeCount().toInt) {
       println(nodeResult(cursor).values + ":" + propagation(cursor))
+
     }
 
   }

@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="panda-gds">
+    <output-path>$PROJECT_DIR$/out/artifacts/panda_gds</output-path>
+    <root id="archive" name="panda-gds.jar">
+      <element id="library" level="project" name="libs" />
+      <element id="module-output" name="panda-gds" />
+    </root>
+  </artifact>
+</component>

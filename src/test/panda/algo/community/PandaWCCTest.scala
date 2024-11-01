@@ -25,6 +25,24 @@ class PandaWCCTest {
   private val hg = GraphConversion.convertWithId(nodeResult, relationshipResult, RelationshipType.of("LINK"))
 
   @Test
+  def wccTestFunc:Unit={
+    val (idMap, nodeIdMap, nodeIdInverseMap) = GraphConversion.getIdMap(nodeResult)
+    val hugeGraph = GraphConversion.createHugeGraph(relationshipResult, idMap, nodeIdInverseMap, "LINK")
+
+    val longs: Array[Long] = PandaWCCConfig.wcc(hugeGraph)
+    val count: Int = hugeGraph.idMap().nodeCount().toInt
+
+    val mapListBuffer = ListBuffer[Map[String, LynxValue]]()
+    for (cursor <- 0 until count) {
+      val map: Map[String, LynxValue] = Map(LynxValue(nodeIdMap.getOrElse(cursor, -1)).toString -> LynxValue(longs(cursor)))
+      mapListBuffer += map
+    }
+
+    val mapList: List[Map[String, LynxValue]] = mapListBuffer.toList
+    println(s"ss:${LynxValue(mapList.map(LynxMap))}")
+  }
+
+  @Test
   def WccTest:Unit={
     val javaMap: JMap[String, Object] = JMap.of(
       "threshold", 3.14.asInstanceOf[AnyRef],

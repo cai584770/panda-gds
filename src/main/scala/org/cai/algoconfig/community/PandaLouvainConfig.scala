@@ -33,7 +33,7 @@ object PandaLouvainConfig {
       .maxIterations(maxIterations)
       .tolerance(tolerance)
       .includeIntermediateCommunities(includeIntermediateCommunities)
-      .concurrency(concurrency).minCommunitySize(1)
+      .concurrency(concurrency)
       .build
 
     val louvain = new Louvain(
@@ -51,7 +51,6 @@ object PandaLouvainConfig {
     louvain.setTerminationFlag(terminationFlag)
 
     val louvainResult: LouvainResult = louvain.compute
-
     (louvainResult.dendrogramManager.getAllDendrograms, louvainResult.modularities)
   }
 

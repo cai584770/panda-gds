@@ -41,6 +41,7 @@ class PathSearchFunctions extends TypeFunctions {
 
     val nodeRecords = tx.executeQuery(nodesQuery).records().toList
     val relationshipsRecords = tx.executeQuery(relationshipsQuery).records().toList
+
     val hugeGraph = GraphConversion.convertWithId(nodeRecords, relationshipsRecords, RelationshipType.of(relationshipLabel.value))
     val target: List[Long] = targets.value.map(l => l.value.asInstanceOf[Long])
 

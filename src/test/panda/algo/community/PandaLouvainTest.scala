@@ -25,6 +25,28 @@ class PandaLouvainTest {
   private val hg = GraphConversion.convertWithId(nodeResult, relationshipResult, RelationshipType.of("LINK"))
 
   @Test
+  def louvainTestFunc():Unit={
+    val (idMap, nodeIdMap, nodeIdInverseMap) = GraphConversion.getIdMap(nodeResult)
+    val hugeGraph = GraphConversion.createHugeGraph(relationshipResult, idMap, nodeIdInverseMap, "LINK")
+
+    val (dendrogram, modularities) = PandaLouvainConfig.louvain(hugeGraph)
+    val count: Int = hugeGraph.idMap().nodeCount().toInt
+    val result = dendrogram(0).toArray
+
+    val mapListBuffer = ListBuffer[Map[String, LynxValue]]()
+    for (cursor <- 0 until count) {
+      val map: Map[String, LynxValue] = Map(LynxValue(nodeIdMap.getOrElse(cursor, -1)).toString -> LynxValue(result(cursor)))
+      mapListBuffer += map
+    }
+
+    Map("Modularities" -> LynxValue(modularities))
+
+    val mapList: List[Map[String, LynxValue]] = mapListBuffer.toList
+    println("---")
+    println(LynxValue(mapList.map(LynxMap)))
+  }
+
+  @Test
   def louvainTest(): Unit = {
     val (dendrogram,modularities) = PandaLouvainConfig.louvain(hg, TOLERANCE_DEFAULT, 10, includeIntermediateCommunities = true, 1, ProgressTracker.NULL_TRACKER, DefaultPool.INSTANCE, TerminationFlag.RUNNING_TRUE)
 

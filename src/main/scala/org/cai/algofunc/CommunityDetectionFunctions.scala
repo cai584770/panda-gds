@@ -44,7 +44,8 @@ class CommunityDetectionFunctions extends TypeFunctions {
     val nodeRecords = tx.executeQuery(nodesQuery).records().toList
     val relationshipsRecords = tx.executeQuery(relationshipsQuery).records().toList
 
-    val hugeGraph = GraphConversion.convertWithId(nodeRecords, relationshipsRecords, RelationshipType.of(relationshipLabel.value))
+    val (idMap, nodeIdMap, nodeIdInverseMap) = GraphConversion.getIdMap(nodeRecords)
+    val hugeGraph = GraphConversion.createHugeGraph(relationshipsRecords, idMap, nodeIdInverseMap, relationshipLabel.value)
 
     val (dendrogram, modularities) = PandaLouvainConfig.louvain(hugeGraph)
     val count: Int = hugeGraph.idMap().nodeCount().toInt
@@ -52,9 +53,11 @@ class CommunityDetectionFunctions extends TypeFunctions {
 
     val mapListBuffer = ListBuffer[Map[String, LynxValue]]()
     for (cursor <- 0 until count) {
-      val map: Map[String, LynxValue] = Map(LynxValue(nodeRecords(cursor).values.toList).toString -> LynxValue(result(cursor)))
+      val map: Map[String, LynxValue] = Map(LynxValue(nodeIdMap.getOrElse(cursor, -1)).toString -> LynxValue(result(cursor)))
       mapListBuffer += map
     }
+
+    Map("Modularities" -> LynxValue(modularities))
 
     val mapList: List[Map[String, LynxValue]] = mapListBuffer.toList
     LynxValue(mapList.map(LynxMap))
@@ -79,14 +82,16 @@ class CommunityDetectionFunctions extends TypeFunctions {
 
     val nodeRecords = tx.executeQuery(nodesQuery).records().toList
     val relationshipsRecords = tx.executeQuery(relationshipsQuery).records().toList
-    val hugeGraph = GraphConversion.convertWithId(nodeRecords, relationshipsRecords, RelationshipType.of(relationshipLabel.value))
-    val count: Int = hugeGraph.idMap().nodeCount().toInt
 
+    val (idMap, nodeIdMap, nodeIdInverseMap) = GraphConversion.getIdMap(nodeRecords)
+    val hugeGraph = GraphConversion.createHugeGraph(relationshipsRecords, idMap, nodeIdInverseMap, relationshipLabel.value)
+
+    val count: Int = hugeGraph.idMap().nodeCount().toInt
     val lpResult: Array[Long] = PandaLabelPropagationConfig.labelPropagation(hugeGraph, concurrency, maxIterations, nodeWeightProperty, executorService, progressTracker)
 
     val mapListBuffer = ListBuffer[Map[String, LynxValue]]()
     for (cursor <- 0 until count) {
-      val map: Map[String, LynxValue] = Map(LynxValue(nodeRecords(cursor).values.toList).toString -> LynxValue(lpResult(cursor)))
+      val map: Map[String, LynxValue] = Map(LynxValue(nodeIdMap.getOrElse(cursor, -1)).toString -> LynxValue(lpResult(cursor)))
       mapListBuffer += map
     }
 
@@ -107,15 +112,15 @@ class CommunityDetectionFunctions extends TypeFunctions {
     val nodeRecords = tx.executeQuery(nodesQuery).records().toList
     val relationshipsRecords = tx.executeQuery(relationshipsQuery).records().toList
 
-    val hugeGraph = GraphConversion.convertWithId(nodeRecords, relationshipsRecords, RelationshipType.of(relationshipLabel.value))
+    val (idMap, nodeIdMap, nodeIdInverseMap) = GraphConversion.getIdMap(nodeRecords)
+    val hugeGraph = GraphConversion.createHugeGraph(relationshipsRecords, idMap, nodeIdInverseMap, relationshipLabel.value)
 
     val longs: Array[Long] = PandaWCCConfig.wcc(hugeGraph)
-
     val count: Int = hugeGraph.idMap().nodeCount().toInt
 
     val mapListBuffer = ListBuffer[Map[String, LynxValue]]()
     for (cursor <- 0 until count) {
-      val map: Map[String, LynxValue] = Map(LynxValue(nodeRecords(cursor).values.toList).toString -> LynxValue(longs(cursor)))
+      val map: Map[String, LynxValue] = Map(LynxValue(nodeIdMap.getOrElse(cursor, -1)).toString -> LynxValue(longs(cursor)))
       mapListBuffer += map
     }
 
